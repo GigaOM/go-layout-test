@@ -1,4 +1,6 @@
-var gigaom_layout_test = {};
+var gigaom_layout_test = {
+	layout_strategy: {}
+};
 (function( $ ) {
 	'use strict';
 
@@ -16,18 +18,18 @@ var gigaom_layout_test = {};
 		this.injected = [];
 		this.insert = {};
 		this.insert.ad1 = {
-			name: 'Ad 1',
-			$el: $( '<div id="ad1" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad #1</div></div>' ),
+			name: 'Ad 300x250 #B',
+			$el: $( '<div id="adB" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #B</div></div>' ),
 			height: 250 // set to the required height, not the actual height
 		};
 		this.insert.ad_tower = {
-			name: 'Ad Tower',
-			$el: $( '<div id="ad-tower" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Tower Ad</div></div>' ),
+			name: 'Ad 300x600',
+			$el: $( '<div id="ad-300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
 			height: 525 // set to the required height, not the actual height
 		};
 		this.insert.ad2 = {
-			name: 'Ad 2',
-			$el: $( '<div id="ad2" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad #2</div></div>' ),
+			name: 'Ad 300x250 #C',
+			$el: $( '<div id="adC" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #C</div></div>' ),
 			height: 250, // set to the required height, not the actual height
 			preferbottom: true
 		};
@@ -203,10 +205,14 @@ var gigaom_layout_test = {};
 	 * auto injects items in order
 	 */
 	gigaom_layout_test.auto_inject = function() {
-		for ( var key in this.insert ) {
-			this.inject_item( this.insert[ key ] );
-			this.calc();
-		}
+		this.layout_strategy.ordered();
+	};
+
+	gigaom_layout_test.layout_strategy.ordered = function() {
+		for ( var key in gigaom_layout_test.insert ) {
+			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ key ] );
+			gigaom_layout_test.calc();
+		}// end foreach
 	};
 
 	/**
