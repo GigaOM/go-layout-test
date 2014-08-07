@@ -12,8 +12,8 @@ var gigaom_layout_test = {
 
 		this.$body.css( 'overflow', 'visible' );
 		this.$content.css( 'position', 'relative' );
-		this.$alignleft.css( 'margin-left', '-150px' );
-		this.$alignright.css( 'margin-right', '-150px' );
+		this.$alignleft.css( 'margin-left', '-159px' );
+		this.$alignright.css( 'margin-right', '-203px' );
 
 		this.injected = [];
 		this.insert = {};
@@ -60,6 +60,7 @@ var gigaom_layout_test = {
 				'background: #f5f5f5;' +
 				'border-top: 1px solid #ccc;' +
 				'bottom: 0;' +
+				'box-shadow: 0 0 5px 0 rgba( 10, 10, 10, 0.2 );' +
 				'left: 0;' +
 				'position: fixed;' +
 				'right: 0;' +
@@ -72,11 +73,19 @@ var gigaom_layout_test = {
 				'display: none;' +
 				'font-size: .875rem;' +
 				'padding-bottom: .25rem;' +
+				'padding-right: 200px;' +
 				'padding-top: .25rem;' +
 			'}' +
 			'.gigaom-layout-test-panel .info ul {' +
 				'display: inline-block;' +
 				'margin-left: 1.5rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .info ul li {' +
+				'background: #fff;' +
+				'border: 1px solid #ccc;' +
+				'border-radius: 4px;' +
+				'line-height: 1.3rem;' +
+				'padding: 0 .5rem;' +
 			'}' +
 			'.gigaom-layout-test-panel .info.injection {' +
 				'background: #fafafa;' +
@@ -89,10 +98,30 @@ var gigaom_layout_test = {
 			'.gigaom-layout-test-panel .commands {' +
 				'list-style-type: none;' +
 			'}' +
-			'.gigaom-layout-test-panel li {' +
+			'.gigaom-layout-test-panel .commands li,' +
+			'.gigaom-layout-test-panel .info li {' +
 				'display: inline-block;' +
 				'list-style-type: none;' +
 				'margin-right: 1rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .blocker-container {' +
+				'background: #f5f5f5;' +
+				'border-left: 1px solid #eee;' +
+				'border-top: 1px solid #eee;' +
+				'border-radius: 4px;' +
+				'bottom: 0;' +
+				'box-shadow: 0 0 5px 0 rgba( 10, 10, 10, 0.2 );' +
+				'padding: 1rem;' +
+				'position: absolute;' +
+				'right: 0;' +
+				'width: 200px;' +
+			'}' +
+			'.gigaom-layout-test-panel .blockers {' +
+				'list-style-type: none;' +
+				'margin-top: .5rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .blockers li {' +
+				'font-size: .875rem;' +
 			'}' +
 			'.layout-box-thing {' +
 				'position: absolute;' +
@@ -148,16 +177,39 @@ var gigaom_layout_test = {
 	};
 
 	gigaom_layout_test.init_panel = function() {
+		var i;
+
 		$( '.gigaom-layout-test-panel' ).remove();
 		var $panel = $( '<div class="gigaom-layout-test-panel"/>' );
+
+		var possible_nonblockers = {
+			blocker_images: {
+				name: 'Aligned images',
+				selector: 'img.alignleft,img.alignright,.wp-caption.alignleft,.wp-caption.alignright'
+			},
+			blocker_blockquotes: {
+				name: 'Blockquotes',
+				selector: 'blockquote'
+			},
+			blocker_headers: {
+				name: 'Headers',
+				selector: 'h1,h2,h3,h4,h5,h6'
+			},
+			blocker_pullquotes: {
+				name: 'Pullquotes',
+				selector: '.pullquote'
+			}
+		};
 
 		$panel.append( '<div class="info injection"><strong>Injection order:</strong></div>' );
 		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
 		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
+		$panel.append( '<div class="blocker-container"><strong>These are blockers:</strong><ul class="blockers" /></div>' );
 
 		var $injection = $panel.find( '.info.injection' );
 		var $order = $panel.find( '.info.order' );
 		var $commands = $panel.find( '.commands' );
+		var $blockers = $panel.find( '.blockers' );
 
 		$injection.append( '<ul class="inserted"/>' );
 		$order.append( '<ul class="order-on-page"/>' );
@@ -165,13 +217,17 @@ var gigaom_layout_test = {
 		var $inserted = $injection.find( '.inserted' );
 		var $order_on_page = $order.find( '.order-on-page' );
 
+		for ( i in possible_nonblockers ) {
+			$blockers.append( '<li class="blocker"><label for="' + i + '"><input type="checkbox" class="go-checkbox" name="' + i + '" id="' + i + '" value="1" data-selector="' + possible_nonblockers[ i ].selector + '" checked/><span>' + possible_nonblockers[ i ].name + '</span></label></li>' );
+		}//end for
+
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject">Auto-layout</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
 		$commands.append( '<li class="command-label">Add:</li>' );
 
-		for ( var i in this.insert ) {
+		for ( i in this.insert ) {
 			$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="' + i + '">' + this.insert[ i ].name + '</button></li>' );
 		}
 
@@ -184,6 +240,12 @@ var gigaom_layout_test = {
 			var $el = $( this );
 			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ $el.data( 'element' ) ] );
 			gigaom_layout_test.calc();
+		});
+
+		$( document ).on( 'change', '.gigaom-layout-test-panel .blockers input', function() {
+			gigaom_layout_test.clear();
+			gigaom_layout_test.reset();
+			gigaom_layout_test.auto_inject();
 		});
 
 		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
@@ -308,6 +370,19 @@ var gigaom_layout_test = {
 		// find top level blackouts
 		this.$content.find( '> *:visible:not(p):not(ol):not(ul):not(script)' ).each( function() {
 			var $el = $( this );
+			var $non_blockers = $( '.gigaom-layout-test-panel .blockers input:not(:checked)' );
+			var non_blockers = {};
+
+			$non_blockers.each( function() {
+				non_blockers[ $( this ).attr( 'name' ) ] = $( this ).data( 'selector' );
+			});
+
+			for ( var i in non_blockers ) {
+				if ( $el.is( non_blockers[ i ] ) ) {
+					return;
+				}//end if
+			}//end for
+
 			var attr = gigaom_layout_test.attributes( $el );
 			attr.is_child = false;
 			gigaom_layout_test.inventory.blackouts.push( attr );
