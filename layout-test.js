@@ -13,6 +13,7 @@ var gigaom_layout_test = {};
 		this.$alignleft.css( 'margin-left', '-150px' );
 		this.$alignright.css( 'margin-right', '-150px' );
 
+		this.injected = [];
 		this.insert = {};
 		this.insert.ad1 = {
 			name: 'Ad 1',
@@ -58,10 +59,23 @@ var gigaom_layout_test = {};
 				'border-top: 1px solid #ccc;' +
 				'bottom: 0;' +
 				'left: 0;' +
-				'padding: .5rem 1rem;' +
 				'position: fixed;' +
 				'right: 0;' +
 				'z-index: 9999999999;' +
+			'}' +
+			'.gigaom-layout-test-panel div {' +
+				'padding: .5rem 1rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .info {' +
+				'display: none;' +
+			'}' +
+			'.gigaom-layout-test-panel .info.injection {' +
+				'background: #fafafa;' +
+				'border-bottom: 1px solid #eee;' +
+			'}' +
+			'.gigaom-layout-test-panel .info.order {' +
+				'background: #fafafa;' +
+				'border-bottom: 1px solid #eee;' +
 			'}' +
 			'.gigaom-layout-test-panel .commands {' +
 				'list-style-type: none;' +
@@ -128,13 +142,24 @@ var gigaom_layout_test = {};
 		$( '.gigaom-layout-test-panel' ).remove();
 		var $panel = $( '<div class="gigaom-layout-test-panel"/>' );
 
-		$panel.append( '<ul class="commands" />' );
+		$panel.append( '<div class="info injection"><strong>Injection order:</strong></div>' );
+		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
+		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
 
+		var $injection = $panel.find( '.info.injection' );
+		var $order = $panel.find( '.info.order' );
 		var $commands = $panel.find( '.commands' );
+
+		$injection.append( '<ul class="inserted"/>' );
+		$order.append( '<ul class="order-on-page"/>' );
+
+		var $inserted = $injection.find( '.inserted' );
+		var $order_on_page = $order.find( '.order-on-page' );
 
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject">Auto-layout</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
 		$commands.append( '<li class="command-label">Add:</li>' );
 		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad1">Square ad1</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad2">Square ad2</button></li>' );
@@ -151,6 +176,24 @@ var gigaom_layout_test = {};
 			var $el = $( this );
 			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ $el.data( 'element' ) ] );
 			gigaom_layout_test.calc();
+		});
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			$injection.hide();
+			$order.hide();
+			$inserted.html( '' );
+		});
+
+		$( document ).on( 'gigaom-layout-test-injected', function( e, data ) {
+			$injection.show();
+			$order.show();
+			$inserted.append( '<li class="item">' + data.injected.name + '</li>' );
+			$order_on_page.html( '' );
+
+			$( '.layout-box-insert' ).each( function() {
+				var $el = $( this );
+				$order_on_page.append( '<li class="item">' + $el.find( 'div' ).html() + '</li>' );
+			});
 		});
 
 		$( 'body' ).append( $panel );
@@ -172,6 +215,7 @@ var gigaom_layout_test = {};
 	gigaom_layout_test.clear = function() {
 		$( '.layout-box-insert' ).remove();
 		this.calc();
+		$( document ).trigger( 'gigaom-layout-test-clear' );
 	};
 
 
@@ -408,7 +452,13 @@ var gigaom_layout_test = {};
 
 		//console.info( 'successfully injected ' + item.name + ' into a ' + $element[0].outerHTML );
 
-		return $element.prepend( item.$el );
+		var injected = $element.prepend( item.$el );
+
+		$( document ).trigger( 'gigaom-layout-test-injected', {
+			injected: item
+		} );
+
+		return injected;
 	};
 
 	gigaom_layout_test.get_tag_ref = function( $el ) {
