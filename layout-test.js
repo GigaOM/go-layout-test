@@ -70,6 +70,13 @@ var gigaom_layout_test = {
 			'}' +
 			'.gigaom-layout-test-panel .info {' +
 				'display: none;' +
+				'font-size: .875rem;' +
+				'padding-bottom: .25rem;' +
+				'padding-top: .25rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .info ul {' +
+				'display: inline-block;' +
+				'margin-left: 1.5rem;' +
 			'}' +
 			'.gigaom-layout-test-panel .info.injection {' +
 				'background: #fafafa;' +
