@@ -2,7 +2,7 @@ var gigaom_layout_test = {};
 (function( $ ) {
 	'use strict';
 
-	gigaom_layout_test.init = function() {
+	gigaom_layout_test.init = function( auto_inject ) {
 		this.$body = $( '.post section.body.entry-content' );
 		this.$content = this.$body.find( '> div' );
 		this.$alignleft = this.$content.find( '.alignleft' );
@@ -53,6 +53,24 @@ var gigaom_layout_test = {};
 		};
 
 		this.css = '<style class="layout-box-css">' +
+			'.gigaom-layout-test-panel {' +
+				'background: #f5f5f5;' +
+				'border-top: 1px solid #ccc;' +
+				'bottom: 0;' +
+				'left: 0;' +
+				'padding: .5rem 1rem;' +
+				'position: fixed;' +
+				'right: 0;' +
+				'z-index: 9999999999;' +
+			'}' +
+			'.gigaom-layout-test-panel .commands {' +
+				'list-style-type: none;' +
+			'}' +
+			'.gigaom-layout-test-panel li {' +
+				'display: inline-block;' +
+				'list-style-type: none;' +
+				'margin-right: 1rem;' +
+			'}' +
 			'.layout-box-thing {' +
 				'position: absolute;' +
 				'width: 100%;' +
@@ -99,13 +117,63 @@ var gigaom_layout_test = {};
 		$( '.layout-box-thing, .layout-box-css, .layout-box-insert' ).remove();
 		this.$content.before( this.css );
 		this.calc();
+		this.init_panel();
 
-		console.info( 'injecting items' );
+		if ( auto_inject ) {
+			this.auto_inject();
+		}
+	};
+
+	gigaom_layout_test.init_panel = function() {
+		$( '.gigaom-layout-test-panel' ).remove();
+		var $panel = $( '<div class="gigaom-layout-test-panel"/>' );
+
+		$panel.append( '<ul class="commands" />' );
+
+		var $commands = $panel.find( '.commands' );
+
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject">Auto-layout</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear</button></li>' );
+		$commands.append( '<li class="command-label">Add:</li>' );
+		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad1">Square ad1</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad2">Square ad2</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad_tower">Tower ad</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="related1">Related Research</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="related2">Related Events</button></li>' );
+
+		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
+			var $el = $( this );
+			gigaom_layout_test[ $el.data( 'action' ) ]();
+		});
+
+		$( document ).on( 'click', '.gigaom-layout-test-panel .inject-element', function() {
+			var $el = $( this );
+			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ $el.data( 'element' ) ] );
+			gigaom_layout_test.calc();
+		});
+
+		$( 'body' ).append( $panel );
+	};
+
+	/**
+	 * auto injects items in order
+	 */
+	gigaom_layout_test.auto_inject = function() {
 		for ( var key in this.insert ) {
 			this.inject_item( this.insert[ key ] );
 			this.calc();
 		}
 	};
+
+	/**
+	 * clears injected units
+	 */
+	gigaom_layout_test.clear = function() {
+		$( '.layout-box-insert' ).remove();
+		this.calc();
+	};
+
 
 	gigaom_layout_test.attributes = function( $el ) {
 		var margin_top = $el.css( 'margin-top' );
@@ -218,10 +286,13 @@ var gigaom_layout_test = {};
 
 	gigaom_layout_test.identify_gaps = function() {
 		var start = 0;
+		var gap;
+		var $overlay;
+		var i;
 
 		if ( 0 === this.inventory.blackouts.length ) {
-			var $overlay = this.overlay( this.$content, start, this.$content.outerHeight(), 'rgba( 0, 255, 0, 0.5 )', 'solo-gap' );
-			var gap = this.attributes( $overlay );
+			$overlay = this.overlay( this.$content, start, this.$content.outerHeight(), 'rgba( 0, 255, 0, 0.5 )', 'solo-gap' );
+			gap = this.attributes( $overlay );
 			gap.$overlay = $overlay;
 			gap.$first_el = this.$content.find( ':first' );
 
@@ -229,17 +300,17 @@ var gigaom_layout_test = {};
 		}//end if
 		else {
 			var previous_blackout = null;
-			for ( var i in this.inventory.blackouts ) {
+			for ( i in this.inventory.blackouts ) {
 				var blackout = this.inventory.blackouts[ i ];
 
 				if ( blackout.start > start ) {
 					var gap_height = blackout.start - start;
-					if ( 0 == gap_height ) {
+					if ( 0 === gap_height ) {
 						continue;
 					}//end if
 
-					var $overlay = this.overlay( blackout.$overlay, start, gap_height, 'rgba( 0, 255, 0, 0.5 )', 'gap' );
-					var gap = this.attributes( $overlay );
+					$overlay = this.overlay( blackout.$overlay, start, gap_height, 'rgba( 0, 255, 0, 0.5 )', 'gap' );
+					gap = this.attributes( $overlay );
 					gap.$overlay = $overlay;
 
 					if ( 0 === start ) {
@@ -277,8 +348,8 @@ var gigaom_layout_test = {};
 
 			if ( previous_blackout.end < this.$content.outerHeight() ) {
 				// find the last gap below the final blackout
-				var $overlay = this.overlay( previous_blackout.$overlay, start, ( this.$content.outerHeight() - start ), 'rgba( 0, 255, 0, 0.5 )', 'last-gap' );
-				var gap = this.attributes( $overlay );
+				$overlay = this.overlay( previous_blackout.$overlay, start, ( this.$content.outerHeight() - start ), 'rgba( 0, 255, 0, 0.5 )', 'last-gap' );
+				gap = this.attributes( $overlay );
 				gap.$overlay = $overlay;
 				gap.$first_el = gap.$overlay.next();
 
@@ -299,8 +370,8 @@ var gigaom_layout_test = {};
 			}//end if
 
 			// execute common code on gaps
-			for ( var i in this.inventory.gaps ) {
-				var gap = this.inventory.gaps[ i ];
+			for ( i in this.inventory.gaps ) {
+				gap = this.inventory.gaps[ i ];
 
 				gap.$first_el.addClass( 'inject-point' );
 			}
@@ -341,7 +412,7 @@ var gigaom_layout_test = {};
 	};
 
 	gigaom_layout_test.get_tag_ref = function( $el ) {
-		var ref = $el.prop( "tagName" ).toLowerCase();
+		var ref = $el.prop( 'tagName' ).toLowerCase();
 
 		var id = $el.attr( 'id' );
 		if ( id ) {
@@ -357,14 +428,19 @@ var gigaom_layout_test = {};
 	};
 
 	gigaom_layout_test.get_element_type = function( $el ) {
+		var alignment;
+		var id;
+		var tagname;
+		var classes;
+
 		if ( $el.is( '.pullquote' ) ) {
 			return 'pullquote';
 		}//end if
 
-		var id = $el.attr( 'id' );
+		id = $el.attr( 'id' );
 
 		if ( id && id.match( /attachment_/g ) ) {
-			var alignment = '';
+			alignment = '';
 			if ( $el.is( '.aligncenter' ) ) {
 				alignment = 'centered';
 			}//end if
@@ -381,7 +457,7 @@ var gigaom_layout_test = {};
 			return id;
 		}//end if
 
-		var tagname = $el.prop( "tagName" ).toLowerCase();
+		tagname = $el.prop( 'tagName' ).toLowerCase();
 		if ( tagname.match( /^h[0-9]$/ ) ) {
 			return 'heading';
 		}//end if
@@ -393,7 +469,7 @@ var gigaom_layout_test = {};
 			return 'blockquote';
 		}//end if
 		if ( 'img' === tagname ) {
-			var alignment = '';
+			alignment = '';
 			if ( $el.is( '.aligncenter' ) ) {
 				alignment = 'centered';
 			}//end if
@@ -407,7 +483,7 @@ var gigaom_layout_test = {};
 			return 'image ' + alignment;
 		}//end if
 
-		var classes = '.' + $el.prop( "class" ).replace(/ /g, '.' );
+		classes = '.' + $el.prop( 'class' ).replace( / /g, '.' );
 		if ( classes.match( /\.embed-/g ) ) {
 			return 'embed';
 		}//end if
