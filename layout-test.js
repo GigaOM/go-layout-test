@@ -15,11 +15,10 @@ var gigaom_layout_test = {
 		this.$alignleft.css( 'margin-left', '-159px' );
 		this.$alignright.css( 'margin-right', '-203px' );
 
-		this.injected = [];
 		this.insert = {};
 		this.insert.adb = {
-			name: 'Ad 300x250 #B',
-			$el: $( '<div id="adB" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #B</div></div>' ),
+			name: 'Ad 300x250 B',
+			$el: $( '<div id="adB" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 B</div></div>' ),
 			height: 250 // set to the required height, not the actual height
 		};
 		this.insert.ad_300x600 = {
@@ -28,8 +27,8 @@ var gigaom_layout_test = {
 			height: 525 // set to the required height, not the actual height
 		};
 		this.insert.adc = {
-			name: 'Ad 300x250 #C',
-			$el: $( '<div id="adC" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #C</div></div>' ),
+			name: 'Ad 300x250 C',
+			$el: $( '<div id="adC" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 C</div></div>' ),
 			height: 250, // set to the required height, not the actual height
 			preferbottom: true
 		};
@@ -52,7 +51,8 @@ var gigaom_layout_test = {
 		this.inventory = {
 			p: [],
 			blackouts: [],
-			gaps: []
+			gaps: [],
+			spaces: []
 		};
 
 		this.css = '<style class="layout-box-css">' +
@@ -198,13 +198,17 @@ var gigaom_layout_test = {
 			blocker_pullquotes: {
 				name: 'Pullquotes',
 				selector: '.pullquote'
+			},
+			blocker_tables: {
+				name: 'Tables',
+				selector: 'table:not(.right):not(.left):not(.sidebar)'
 			}
 		};
 
 		$panel.append( '<div class="info injection"><strong>Injection order:</strong></div>' );
 		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
 		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
-		$panel.append( '<div class="blocker-container"><strong>These are blockers:</strong><ul class="blockers" /></div>' );
+		$panel.append( '<div class="blocker-container"><strong>Avoid these:</strong><ul class="blockers" /></div>' );
 
 		var $injection = $panel.find( '.info.injection' );
 		var $order = $panel.find( '.info.order' );
@@ -242,9 +246,10 @@ var gigaom_layout_test = {
 			gigaom_layout_test.calc();
 		});
 
-		$( document ).on( 'change', '.gigaom-layout-test-panel .blockers input', function() {
+		$( document ).on( 'click', '.gigaom-layout-test-panel .blockers .blocker label', function() {
 			gigaom_layout_test.clear();
 			gigaom_layout_test.reset();
+			gigaom_layout_test.calc();
 			gigaom_layout_test.auto_inject();
 		});
 
@@ -539,7 +544,7 @@ var gigaom_layout_test = {
 
 		//console.info( 'successfully injected ' + item.name + ' into a ' + $element[0].outerHTML );
 
-		var injected = $element.prepend( item.$el );
+		var injected = $element.before( item.$el );
 
 		$( document ).trigger( 'gigaom-layout-test-injected', {
 			injected: item
