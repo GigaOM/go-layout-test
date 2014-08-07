@@ -17,17 +17,17 @@ var gigaom_layout_test = {
 
 		this.injected = [];
 		this.insert = {};
-		this.insert.ad1 = {
+		this.insert.adb = {
 			name: 'Ad 300x250 #B',
 			$el: $( '<div id="adB" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #B</div></div>' ),
 			height: 250 // set to the required height, not the actual height
 		};
-		this.insert.ad_tower = {
+		this.insert.ad_300x600 = {
 			name: 'Ad 300x600',
 			$el: $( '<div id="ad-300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
 			height: 525 // set to the required height, not the actual height
 		};
-		this.insert.ad2 = {
+		this.insert.adc = {
 			name: 'Ad 300x250 #C',
 			$el: $( '<div id="adC" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 #C</div></div>' ),
 			height: 250, // set to the required height, not the actual height
@@ -163,11 +163,10 @@ var gigaom_layout_test = {
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
 		$commands.append( '<li class="command-label">Add:</li>' );
-		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad1">Square ad1</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad2">Square ad2</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="ad_tower">Tower ad</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="related1">Related Research</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="related2">Related Events</button></li>' );
+
+		for ( var i in this.insert ) {
+			$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="' + i + '">' + this.insert[ i ].name + '</button></li>' );
+		}
 
 		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
 			var $el = $( this );
