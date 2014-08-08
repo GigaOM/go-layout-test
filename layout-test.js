@@ -18,34 +18,34 @@ var gigaom_layout_test = {
 		this.insert = {};
 		this.insert.adb = {
 			name: 'Ad 300x250 B',
-			$el: $( '<div id="adB" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 B</div></div>' ),
+			$el: $( '<div id="adB" data-element="adb" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 B</div></div>' ),
 			height: 250 // set to the required height, not the actual height
 		};
 		this.insert.ad_300x600 = {
 			name: 'Ad 300x600',
-			$el: $( '<div id="ad-300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
+			$el: $( '<div id="ad-300x600" data-element="ad_300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
 			height: 525 // set to the required height, not the actual height
 		};
 		this.insert.adc = {
 			name: 'Ad 300x250 C',
-			$el: $( '<div id="adC" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 C</div></div>' ),
+			$el: $( '<div id="adC" data-element="adc" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 C</div></div>' ),
 			height: 250, // set to the required height, not the actual height
 			preferbottom: true
 		};
 		this.insert.auto3 = {
 			name: 'Auto 3',
-			$el: $( '<div id="auto3" class="layout-box-insert layout-box-insert-left" style="height:375px;background:blue;"><div>Auto 3</div></div>' ),
-			height: 325, // set to the required height, not the actual height
+			$el: $( '<div id="auto3" data-element="auto3" class="layout-box-insert layout-box-insert-left" style="height:375px;background:blue;"><div>Auto 3</div></div>' ),
+			height: 325 // set to the required height, not the actual height
 		};
 		this.insert.autoe = {
 			name: 'Auto E',
-			$el: $( '<div id="autoe" class="layout-box-insert layout-box-insert-left" style="height:325px;background:blue;"><div>Auto E</div></div>' ),
-			height: 270, // set to the required height, not the actual height
+			$el: $( '<div id="autoe" data-element="autoe" class="layout-box-insert layout-box-insert-left" style="height:325px;background:blue;"><div>Auto E</div></div>' ),
+			height: 270 // set to the required height, not the actual height
 		};
 		this.insert.newsletter = {
 			name: 'Newsletter Subscription',
-			$el: $( '<div id="newsletter-sub" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
-			height: 250, // set to the required height, not the actual height
+			$el: $( '<div id="newsletter-sub" data-element="newsletter" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
+			height: 250 // set to the required height, not the actual height
 		};
 
 		this.inventory = {
@@ -65,6 +65,9 @@ var gigaom_layout_test = {
 				'position: fixed;' +
 				'right: 0;' +
 				'z-index: 9999999999;' +
+			'}' +
+			'.gigaom-layout-test-panel .json {' +
+				'display: none;' +
 			'}' +
 			'.gigaom-layout-test-panel div {' +
 				'padding: .5rem 1rem;' +
@@ -209,6 +212,7 @@ var gigaom_layout_test = {
 		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
 		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
 		$panel.append( '<div class="blocker-container"><strong>Avoid these:</strong><ul class="blockers" /></div>' );
+		$panel.append( '<div class="json"></div>' );
 
 		var $injection = $panel.find( '.info.injection' );
 		var $order = $panel.find( '.info.order' );
@@ -246,9 +250,8 @@ var gigaom_layout_test = {
 			gigaom_layout_test.calc();
 		});
 
-		$( document ).on( 'click', '.gigaom-layout-test-panel .blockers .blocker label', function() {
+		$( document ).on( 'change', '.gigaom-layout-test-panel .blockers .blocker input', function() {
 			gigaom_layout_test.clear();
-			gigaom_layout_test.reset();
 			gigaom_layout_test.calc();
 			gigaom_layout_test.auto_inject();
 		});
@@ -274,11 +277,22 @@ var gigaom_layout_test = {
 		$( 'body' ).append( $panel );
 	};
 
+	gigaom_layout_test.build_injected_json = function() {
+			var elements = [];
+			$( '.layout-box-insert' ).each( function() {
+				var $el = $( this );
+				elements.push( $el.data( 'element' ) );
+			});
+
+			$( '.gigaom-layout-test-panel .json' ).html( '<div id="gigaom-layout-test-json-data">' + JSON.stringify( elements ) + '</div>' );
+	};
+
 	/**
 	 * auto injects items in order
 	 */
 	gigaom_layout_test.auto_inject = function() {
 		this.layout_strategy.ordered();
+		this.build_injected_json();
 	};
 
 	gigaom_layout_test.layout_strategy.ordered = function() {
@@ -292,7 +306,7 @@ var gigaom_layout_test = {
 	 * clears injected units
 	 */
 	gigaom_layout_test.clear = function() {
-		$( '.layout-box-insert' ).remove();
+		$( '.layout-box-insert,#gigaom-layout-test-json-data' ).remove();
 		this.calc();
 		$( document ).trigger( 'gigaom-layout-test-clear' );
 	};
