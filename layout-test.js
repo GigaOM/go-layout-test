@@ -161,11 +161,11 @@ var gigaom_layout_test = {
 			'.layout-box-insert.layout-box-insert-right {' +
 				'float: right;' +
 				'margin-left: .5rem;' +
-				'margin-right: -150px;' +
+				'margin-right: -203px;' +
 			'}' +
 			'.layout-box-insert.layout-box-insert-left {' +
 				'float: left;' +
-				'margin-left: -150px;' +
+				'margin-left: -159px;' +
 				'margin-right: .5rem;' +
 			'}' +
 			'.inject-point {' +
