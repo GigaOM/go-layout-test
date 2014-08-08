@@ -66,8 +66,12 @@ var gigaom_layout_test = {
 				'right: 0;' +
 				'z-index: 9999999999;' +
 			'}' +
-			'.gigaom-layout-test-panel .json {' +
-				'display: none;' +
+			'.gigaom-layout-test-panel-json {' +
+				'bottom: 0;' +
+				'left: 0;' +
+				'position: fixed;' +
+				'right: 0;' +
+				'z-index: 0;' +
 			'}' +
 			'.gigaom-layout-test-panel div {' +
 				'padding: .5rem 1rem;' +
@@ -184,6 +188,8 @@ var gigaom_layout_test = {
 
 		$( '.gigaom-layout-test-panel' ).remove();
 		var $panel = $( '<div class="gigaom-layout-test-panel"/>' );
+		var $json_panel = $( '<div class="gigaom-layout-test-panel-json"></div>' );
+		$( 'body' ).append( $json_panel );
 
 		var possible_nonblockers = {
 			blocker_images: {
@@ -212,7 +218,6 @@ var gigaom_layout_test = {
 		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
 		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
 		$panel.append( '<div class="blocker-container"><strong>Avoid these:</strong><ul class="blockers" /></div>' );
-		$panel.append( '<div class="json"></div>' );
 
 		var $injection = $panel.find( '.info.injection' );
 		var $order = $panel.find( '.info.order' );
@@ -284,7 +289,7 @@ var gigaom_layout_test = {
 				elements.push( $el.data( 'element' ) );
 			});
 
-			$( '.gigaom-layout-test-panel .json' ).html( '<div id="gigaom-layout-test-json-data">' + JSON.stringify( elements ) + '</div>' );
+			$( '.gigaom-layout-test-panel-json' ).html( '<div id="gigaom-layout-test-json-data">' + JSON.stringify( elements ) + '</div>' );
 	};
 
 	/**
