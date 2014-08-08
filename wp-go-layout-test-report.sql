@@ -17,7 +17,9 @@ FROM
 			AND headers_blocking = 1
 			AND blockquotes_blocking = 1
 		GROUP BY
-			strategy
+			strategy,
+			headers_blocking,
+			blockquotes_blocking
 		UNION
 		SELECT
 			strategy,
@@ -31,7 +33,9 @@ FROM
 			AND headers_blocking = 1
 			AND blockquotes_blocking = 0
 		GROUP BY
-			strategy
+			strategy,
+			headers_blocking,
+			blockquotes_blocking
 		UNION
 		SELECT
 			strategy,
@@ -45,7 +49,9 @@ FROM
 			AND headers_blocking = 0
 			AND blockquotes_blocking = 1
 		GROUP BY
-			strategy
+			strategy,
+			headers_blocking,
+			blockquotes_blocking
 		UNION
 		SELECT
 			strategy,
@@ -59,7 +65,9 @@ FROM
 			AND headers_blocking = 0
 			AND blockquotes_blocking = 0
 		GROUP BY
-			strategy
+			strategy,
+			headers_blocking,
+			blockquotes_blocking
 	) t
 GROUP BY
 	strategy,
