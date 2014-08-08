@@ -32,12 +32,12 @@ var gigaom_layout_test = {
 			height: 250, // set to the required height, not the actual height
 			preferbottom: true
 		};
-		this.insert.related1 = {
+		this.insert.auto3 = {
 			name: 'Auto 3',
 			$el: $( '<div id="auto3" class="layout-box-insert layout-box-insert-left" style="height:375px;background:blue;"><div>Auto 3</div></div>' ),
 			height: 325, // set to the required height, not the actual height
 		};
-		this.insert.related2 = {
+		this.insert.autoe = {
 			name: 'Auto E',
 			$el: $( '<div id="autoe" class="layout-box-insert layout-box-insert-left" style="height:325px;background:blue;"><div>Auto E</div></div>' ),
 			height: 270, // set to the required height, not the actual height
