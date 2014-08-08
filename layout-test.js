@@ -19,23 +19,23 @@ var gigaom_layout_test = {
 		this.insert.adb = {
 			name: 'Ad 300x250 B',
 			$el: $( '<div id="adB" data-element="adb" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 B</div></div>' ),
-			height: 250 // set to the required height, not the actual height
+			height: 260 // set to the required height, not the actual height
 		};
 		this.insert.ad_300x600 = {
 			name: 'Ad 300x600',
 			$el: $( '<div id="ad-300x600" data-element="ad_300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
-			height: 525 // set to the required height, not the actual height
+			height: 535 // set to the required height, not the actual height
 		};
 		this.insert.adc = {
 			name: 'Ad 300x250 C',
 			$el: $( '<div id="adC" data-element="adc" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 C</div></div>' ),
-			height: 250, // set to the required height, not the actual height
+			height: 260, // set to the required height, not the actual height
 			preferbottom: true
 		};
 		this.insert.auto3 = {
 			name: 'Auto 3',
 			$el: $( '<div id="auto3" data-element="auto3" class="layout-box-insert layout-box-insert-left" style="height:375px;background:blue;"><div>Auto 3</div></div>' ),
-			height: 325 // set to the required height, not the actual height
+			height: 370 // set to the required height, not the actual height
 		};
 		this.insert.autoe = {
 			name: 'Auto E',
@@ -45,7 +45,7 @@ var gigaom_layout_test = {
 		this.insert.newsletter = {
 			name: 'Newsletter Subscription',
 			$el: $( '<div id="newsletter-sub" data-element="newsletter" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
-			height: 250 // set to the required height, not the actual height
+			height: 260 // set to the required height, not the actual height
 		};
 
 		this.inventory = {
