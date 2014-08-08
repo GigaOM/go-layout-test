@@ -9,6 +9,8 @@ var gigaom_layout_test = {
 		this.$content = this.$body.find( '> div' );
 		this.$alignleft = this.$content.find( '.alignleft' );
 		this.$alignright = this.$content.find( '.alignright' );
+		this.current_strategy = 'ordered';
+		this.current_strategy_type = 'tower_second';
 
 		this.$body.css( 'overflow', 'visible' );
 		this.$content.css( 'position', 'relative' );
@@ -46,6 +48,25 @@ var gigaom_layout_test = {
 			name: 'Newsletter Subscription',
 			$el: $( '<div id="newsletter-sub" data-element="newsletter" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
 			height: 260 // set to the required height, not the actual height
+		};
+
+		this.strategies = {
+			tower_second: [
+				'adb',
+				'ad_300x600',
+				'adc',
+				'auto3',
+				'autoe',
+				'newsletter'
+			],
+			tower_third: [
+				'adb',
+				'adc',
+				'ad_300x600',
+				'auto3',
+				'autoe',
+				'newsletter'
+			]
 		};
 
 		this.inventory = {
@@ -110,6 +131,9 @@ var gigaom_layout_test = {
 				'display: inline-block;' +
 				'list-style-type: none;' +
 				'margin-right: 1rem;' +
+			'}' +
+			'.gigaom-layout-test-panel .command .selected {' +
+				'font-weight: bold;' +
 			'}' +
 			'.gigaom-layout-test-panel .blocker-container {' +
 				'background: #f5f5f5;' +
@@ -235,18 +259,29 @@ var gigaom_layout_test = {
 		}//end for
 
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject">Auto-layout</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
+		$commands.append( '<li class="command-label">Strategy:</li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_second">Tower second</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_third">Tower third</button></li>' );
+		/*
 		$commands.append( '<li class="command-label">Add:</li>' );
 
 		for ( i in this.insert ) {
 			$commands.append( '<li class="command"><button type="button" class="inject-element button link" data-element="' + i + '">' + this.insert[ i ].name + '</button></li>' );
 		}
+		*/
 
 		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
 			var $el = $( this );
-			gigaom_layout_test[ $el.data( 'action' ) ]();
+			if ( 'auto_inject' === $el.data( 'action' ) ) {
+				gigaom_layout_test.current_strategy = $el.data( 'strategy' );
+				gigaom_layout_test.current_strategy_type = $el.data( 'strategy-type' );
+				gigaom_layout_test.clear();
+				gigaom_layout_test.calc();
+			}//end if
+
+			gigaom_layout_test[ $el.data( 'action' ) ]( $el.data( 'param' ) );
 		});
 
 		$( document ).on( 'click', '.gigaom-layout-test-panel .inject-element', function() {
@@ -296,13 +331,15 @@ var gigaom_layout_test = {
 	 * auto injects items in order
 	 */
 	gigaom_layout_test.auto_inject = function() {
-		this.layout_strategy.ordered();
+		$( '.gigaom-layout-test-panel .command button' ).removeClass( 'selected' );
+		$( '.gigaom-layout-test-panel button[data-action="auto_inject"][data-strategy="' + this.current_strategy + '"][data-strategy-type="' + this.current_strategy_type + '"]' ).addClass( 'selected' );
+		this.layout_strategy[ this.current_strategy ]( this.current_strategy_type );
 		this.build_injected_json();
 	};
 
-	gigaom_layout_test.layout_strategy.ordered = function() {
-		for ( var key in gigaom_layout_test.insert ) {
-			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ key ] );
+	gigaom_layout_test.layout_strategy.ordered = function( type ) {
+		for ( var key in gigaom_layout_test.strategies[ type ] ) {
+			gigaom_layout_test.inject_item( gigaom_layout_test.insert[ gigaom_layout_test.strategies[ type ][ key ] ] );
 			gigaom_layout_test.calc();
 		}// end foreach
 	};
