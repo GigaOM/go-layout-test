@@ -49,6 +49,21 @@ var gigaom_layout_test = {
 			$el: $( '<div id="newsletter-sub" data-element="newsletter" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
 			height: 260 // set to the required height, not the actual height
 		};
+		this.insert.add = {
+			name: 'Ad 300x250 D',
+			$el: $( '<div id="adD" data-element="add" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 D</div></div>' ),
+			height: 260 // set to the required height, not the actual height
+		};
+		this.insert.ade = {
+			name: 'Ad 300x250 E',
+			$el: $( '<div id="adE" data-element="ade" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 E</div></div>' ),
+			height: 260 // set to the required height, not the actual height
+		};
+		this.insert.adf = {
+			name: 'Ad 300x250 F',
+			$el: $( '<div id="adF" data-element="adf" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 F</div></div>' ),
+			height: 260 // set to the required height, not the actual height
+		};
 
 		this.strategies = {
 			tower_second: [
@@ -66,6 +81,17 @@ var gigaom_layout_test = {
 				'auto3',
 				'autoe',
 				'newsletter'
+			],
+			many_300x250: [
+				'adb',
+				'adc',
+				'ad_300x600',
+				'auto3',
+				'autoe',
+				'newsletter',
+				'add',
+				'ade',
+				'adf'
 			]
 		};
 
@@ -264,6 +290,7 @@ var gigaom_layout_test = {
 		$commands.append( '<li class="command-label">Strategy:</li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_second">Tower second</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_third">Tower third</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="many_300x250">Many 300x200</button></li>' );
 		/*
 		$commands.append( '<li class="command-label">Add:</li>' );
 
