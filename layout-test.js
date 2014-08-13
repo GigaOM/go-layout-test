@@ -10,7 +10,7 @@ var gigaom_layout_test = {
 		this.$alignleft = this.$content.find( '.alignleft' );
 		this.$alignright = this.$content.find( '.alignright' );
 		this.current_strategy = 'ordered';
-		this.current_strategy_type = 'tower_second';
+		this.current_strategy_type = 'many_300x250';
 
 		this.$body.css( 'overflow', 'visible' );
 		this.$content.css( 'position', 'relative' );
@@ -279,18 +279,20 @@ var gigaom_layout_test = {
 
 		var $inserted = $injection.find( '.inserted' );
 		var $order_on_page = $order.find( '.order-on-page' );
+		var is_checked = true;
 
 		for ( i in possible_nonblockers ) {
-			$blockers.append( '<li class="blocker"><label for="' + i + '"><input type="checkbox" class="go-checkbox" name="' + i + '" id="' + i + '" value="1" data-selector="' + possible_nonblockers[ i ].selector + '" checked/><span>' + possible_nonblockers[ i ].name + '</span></label></li>' );
+			is_checked = 'blocker_headers' === i || 'blocker_blockquotes' === i ? false : true;
+			$blockers.append( '<li class="blocker"><label for="' + i + '"><input type="checkbox" class="go-checkbox" name="' + i + '" id="' + i + '" value="1" data-selector="' + possible_nonblockers[ i ].selector + '" ' + ( is_checked ? 'checked' : '' ) + '/><span>' + possible_nonblockers[ i ].name + '</span></label></li>' );
 		}//end for
 
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
 		$commands.append( '<li class="command-label">Strategy:</li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="many_300x250">Tower second &amp; 6 300x250</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_second">Tower second</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_third">Tower third</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="many_300x250">Many 300x200</button></li>' );
 		/*
 		$commands.append( '<li class="command-label">Add:</li>' );
 
