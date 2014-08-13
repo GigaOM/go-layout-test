@@ -20,48 +20,111 @@ var gigaom_layout_test = {
 		this.insert = {};
 		this.insert.adb = {
 			name: 'Ad 300x250 B',
-			$el: $( '<div id="adB" data-element="adb" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 B</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x250 B',
+				html_id: 'adB',
+				element_id: 'adb',
+				height: '266px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 260 // set to the required height, not the actual height
 		};
 		this.insert.ad_300x600 = {
 			name: 'Ad 300x600',
-			$el: $( '<div id="ad-300x600" data-element="ad_300x600" class="layout-box-insert layout-box-insert-right tall" style="height:616px;"><div>Ad 300x600</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x600',
+				html_id: 'add-300x600',
+				element_id: 'ad_300x600',
+				height: '616px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 550 // set to the required height, not the actual height
 		};
 		this.insert.adc = {
 			name: 'Ad 300x250 C',
-			$el: $( '<div id="adC" data-element="adc" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 C</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x250 C',
+				html_id: 'adC',
+				element_id: 'adc',
+				height: '266px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 260, // set to the required height, not the actual height
 			preferbottom: true
 		};
 		this.insert.auto3 = {
 			name: 'Auto 3',
-			$el: $( '<div id="auto3" data-element="auto3" class="layout-box-insert layout-box-insert-left" style="height:375px;background:blue;"><div>Auto 3</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Auto 3',
+				html_id: 'auto3',
+				element_id: 'auto3',
+				height: '375px',
+				color: 'blue',
+				location: 'left'
+			} ),
 			height: 370 // set to the required height, not the actual height
 		};
 		this.insert.autoe = {
 			name: 'Auto E',
-			$el: $( '<div id="autoe" data-element="autoe" class="layout-box-insert layout-box-insert-left" style="height:325px;background:blue;"><div>Auto E</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Auto E',
+				html_id: 'autoe',
+				element_id: 'autoe',
+				height: '325px',
+				color: 'blue',
+				location: 'left'
+			} ),
 			height: 270 // set to the required height, not the actual height
 		};
 		this.insert.newsletter = {
 			name: 'Newsletter Subscription',
-			$el: $( '<div id="newsletter-sub" data-element="newsletter" class="layout-box-insert layout-box-insert-left" style="height:280px;background:blue;"><div>Newsletter Subscription</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Newsletter Subscription',
+				html_id: 'newsletter-sub',
+				element_id: 'newsletter',
+				height: '280px',
+				color: 'blue',
+				location: 'left'
+			} ),
 			height: 260 // set to the required height, not the actual height
 		};
 		this.insert.add = {
 			name: 'Ad 300x250 D',
-			$el: $( '<div id="adD" data-element="add" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 D</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x250 D',
+				html_id: 'adD',
+				element_id: 'add',
+				height: '266px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 260 // set to the required height, not the actual height
 		};
 		this.insert.ade = {
 			name: 'Ad 300x250 E',
-			$el: $( '<div id="adE" data-element="ade" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 E</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x250 E',
+				html_id: 'adE',
+				element_id: 'ade',
+				height: '266px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 260 // set to the required height, not the actual height
 		};
 		this.insert.adf = {
 			name: 'Ad 300x250 F',
-			$el: $( '<div id="adF" data-element="adf" class="layout-box-insert layout-box-insert-right" style="height:266px;"><div>Ad 300x250 F</div></div>' ),
+			$el: this.generate_box( {
+				name: 'Ad 300x250 F',
+				html_id: 'adF',
+				element_id: 'adf',
+				height: '266px',
+				color: 'red',
+				location: 'right'
+			} ),
 			height: 260 // set to the required height, not the actual height
 		};
 
@@ -344,6 +407,10 @@ var gigaom_layout_test = {
 		});
 
 		$( 'body' ).append( $panel );
+	};
+
+	gigaom_layout_test.generate_box = function( args ) {
+		return $( '<div id="' + args.html_id + '" data-element="' + args.element_id + '" class="layout-box-insert layout-box-insert-' + args.location + '" style="height:' + args.height + ';background:' + args.color + '"><div>' + args.name + '</div></div>' );
 	};
 
 	gigaom_layout_test.build_injected_json = function() {
