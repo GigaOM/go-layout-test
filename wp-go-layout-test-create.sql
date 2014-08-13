@@ -1,0 +1,20 @@
+CREATE TABLE `wp_go_layout_test` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `strategy` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `headers_blocking` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `blockquotes_blocking` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `adb` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `adc` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `ad_300x600` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `auto3` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `autoe` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `newsletter` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `add` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `ade` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `adf` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `timestamp` datetime NOT NULL,
+  `hits` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `url_strategy` (`url`,`strategy`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
