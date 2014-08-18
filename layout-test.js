@@ -14,8 +14,10 @@ var gigaom_layout_test = {
 
 		this.$body.css( 'overflow', 'visible' );
 		this.$content.css( 'position', 'relative' );
-		this.$alignleft.css( 'margin-left', '-159px' );
-		this.$alignright.css( 'margin-right', '-203px' );
+		this.$alignleft.css( 'margin-left', '-112px' );
+		this.$alignright.css( 'margin-right', '-172px' );
+		this.$alignleft.css( 'border-right', '1.25rem solid #fff' );
+		this.$alignleft.css( 'border-left', '1.25rem solid #fff' );
 
 		$( 'body' ).addClass( 'go-layout-test' );
 
@@ -168,6 +170,12 @@ var gigaom_layout_test = {
 		};
 
 		this.css = '<style class="layout-box-css">' +
+			'.go-layout-test #body {' +
+				'float: none;' +
+				'left: -48px;' +
+				'margin: 0 auto;' +
+				'position: relative;' +
+			'}' +
 			'.go-layout-test .post {' +
 				'width: 624px;' +
 			'}' +
@@ -175,6 +183,7 @@ var gigaom_layout_test = {
 				'font-size: 1.125rem;' +
 			'}' +
 			'.go-layout-test #sidebar {' +
+				'display: none;' +
 				'opacity: 0.075;' +
 			'}' +
 			'.gigaom-layout-test-panel {' +
@@ -284,13 +293,13 @@ var gigaom_layout_test = {
 			'}' +
 			'.layout-box-insert.layout-box-insert-right {' +
 				'float: right;' +
-				'margin-left: .5rem;' +
-				'margin-right: -203px;' +
+				'margin-left: 1.5rem;' +
+				'margin-right: -172px;' +
 			'}' +
 			'.layout-box-insert.layout-box-insert-left {' +
 				'float: left;' +
-				'margin-left: -159px;' +
-				'margin-right: .5rem;' +
+				'margin-left: -112px;' +
+				'margin-right: 1.5rem;' +
 			'}' +
 			'.inject-point {' +
 				'background: green;' +
