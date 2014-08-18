@@ -19,7 +19,7 @@ var gigaom_layout_test = {
 		this.$alignleft.css( 'border-right', '1.25rem solid #fff' );
 		this.$alignleft.css( 'border-left', '1.25rem solid #fff' );
 
-		$( 'body' ).addClass( 'go-layout-test' );
+		$( 'body' ).addClass( 'go-layout-test go-layout-test-bigger-font' );
 
 		this.insert = {};
 		this.insert.adb = {
