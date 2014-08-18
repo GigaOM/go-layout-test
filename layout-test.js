@@ -181,6 +181,10 @@ var gigaom_layout_test = {
 			'}' +
 			'.go-layout-test-bigger-font .entry-content {' +
 				'font-size: 1.125rem;' +
+				'line-height: 26px;' +
+			'}' +
+			'.go-layout-test-bigger-font .entry-content p {' +
+				'margin-bottom: 24px;' +
 			'}' +
 			'.go-layout-test #sidebar {' +
 				'opacity: 0.075;' +
