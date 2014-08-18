@@ -151,8 +151,8 @@ var gigaom_layout_test = {
 			],
 			many_300x250: [
 				'adb',
-				'adc',
 				'ad_300x600',
+				'adc',
 				'auto3',
 				'autoe',
 				'newsletter',
