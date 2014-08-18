@@ -183,8 +183,10 @@ var gigaom_layout_test = {
 				'font-size: 1.125rem;' +
 			'}' +
 			'.go-layout-test #sidebar {' +
-				'display: none;' +
 				'opacity: 0.075;' +
+				'position: absolute;' +
+				'right: 0;' +
+				'top: 0;' +
 			'}' +
 			'.gigaom-layout-test-panel {' +
 				'background: #f5f5f5;' +
