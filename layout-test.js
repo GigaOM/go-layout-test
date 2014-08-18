@@ -17,6 +17,8 @@ var gigaom_layout_test = {
 		this.$alignleft.css( 'margin-left', '-159px' );
 		this.$alignright.css( 'margin-right', '-203px' );
 
+		$( 'body' ).addClass( 'go-layout-test' );
+
 		this.insert = {};
 		this.insert.adb = {
 			name: 'Ad 300x250 B',
@@ -166,6 +168,15 @@ var gigaom_layout_test = {
 		};
 
 		this.css = '<style class="layout-box-css">' +
+			'.go-layout-test .post {' +
+				'width: 624px;' +
+			'}' +
+			'.go-layout-test .entry-content {' +
+				'font-size: 1.125rem;' +
+			'}' +
+			'.go-layout-test #sidebar {' +
+				'opacity: 0.075;' +
+			'}' +
 			'.gigaom-layout-test-panel {' +
 				'background: #f5f5f5;' +
 				'border-top: 1px solid #ccc;' +
