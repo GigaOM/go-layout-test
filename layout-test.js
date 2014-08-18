@@ -179,7 +179,7 @@ var gigaom_layout_test = {
 			'.go-layout-test .post {' +
 				'width: 624px;' +
 			'}' +
-			'.go-layout-test .entry-content {' +
+			'.go-layout-test-bigger-font .entry-content {' +
 				'font-size: 1.125rem;' +
 			'}' +
 			'.go-layout-test #sidebar {' +
@@ -374,6 +374,7 @@ var gigaom_layout_test = {
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="calc">Calculate</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear">Clear injections</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="reset">Clear overlay</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="font_size_change">Font size change</button></li>' );
 		$commands.append( '<li class="command-label">Strategy:</li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="many_300x250">Tower second &amp; 6 300x250</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="auto_inject" data-strategy="ordered" data-strategy-type="tower_second">Tower second</button></li>' );
@@ -436,13 +437,17 @@ var gigaom_layout_test = {
 	};
 
 	gigaom_layout_test.build_injected_json = function() {
-			var elements = [];
-			$( '.layout-box-insert' ).each( function() {
-				var $el = $( this );
-				elements.push( $el.data( 'element' ) );
-			});
+		var data = {
+			elements: [],
+			comments: $( '#comments .comment' ).length,
+			font_size: $( 'body.go-layout-test-bigger-font' ).length ? '18px' : '16px'
+		};
+		$( '.layout-box-insert' ).each( function() {
+			var $el = $( this );
+			data.elements.push( $el.data( 'element' ) );
+		});
 
-			$( '.gigaom-layout-test-panel-json' ).html( '<div id="gigaom-layout-test-json-data">' + JSON.stringify( elements ) + '</div>' );
+		$( '.gigaom-layout-test-panel-json' ).html( '<div id="gigaom-layout-test-json-data">' + JSON.stringify( data ) + '</div>' );
 	};
 
 	/**
@@ -471,6 +476,15 @@ var gigaom_layout_test = {
 		$( document ).trigger( 'gigaom-layout-test-clear' );
 	};
 
+	/**
+	 * changes the font size of the main body area
+	 */
+	gigaom_layout_test.font_size_change = function() {
+		$( 'body' ).toggleClass( 'go-layout-test-bigger-font' );
+		this.clear();
+		this.calc();
+		this.auto_inject();
+	};
 
 	gigaom_layout_test.attributes = function( $el ) {
 		var margin_top = $el.css( 'margin-top' );
