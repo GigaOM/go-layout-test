@@ -492,8 +492,6 @@ var gigaom_layout_test = {
 
 	gigaom_layout_test.attributes = function( $el ) {
 		var margin_top = $el.css( 'margin-top' );
-		//if no margin-top, bail, not a "real" element
-
 		var margin_bottom = $el.css( 'margin-bottom' );
 
 		margin_top = parseInt( margin_top.replace( 'px', '' ), 10 );
