@@ -19,8 +19,6 @@ var gigaom_layout_test = {
 		this.$alignleft.css( 'border-right', '1.25rem solid #fff' );
 		this.$alignleft.css( 'border-left', '1.25rem solid #fff' );
 
-		this.test = '';
-
 		$( 'body' ).addClass( 'go-layout-test go-layout-test-bigger-font' );
 
 		this.insert = {};
@@ -495,13 +493,6 @@ var gigaom_layout_test = {
 	gigaom_layout_test.attributes = function( $el ) {
 		var margin_top = $el.css( 'margin-top' );
 		//if no margin-top, bail, not a "real" element
-		if( 'undefined' == typeof margin_top ) {
-			console.log( gigaom_layout_test.test );
-			return '';
-		}//end if
-		else {
-			console.log('good');
-		}
 
 		var margin_bottom = $el.css( 'margin-bottom' );
 
@@ -565,7 +556,6 @@ var gigaom_layout_test = {
 		// find things (not sure what we are using this for)
 		this.$content.find( '> p, > ol, > ul' ).each( function() {
 			var $el = $( this );
-			gigaom_layout_test.test = 'find things';
 			var attr = gigaom_layout_test.attributes( $el );
 			gigaom_layout_test.inventory.p.push( attr );
 		});
@@ -591,7 +581,6 @@ var gigaom_layout_test = {
 					return;
 				}//end if
 			}//end for
-			gigaom_layout_test.test = 'blackouts';
 			var attr = gigaom_layout_test.attributes( $el );
 			attr.is_child = false;
 			gigaom_layout_test.inventory.blackouts.push( attr );
@@ -603,8 +592,6 @@ var gigaom_layout_test = {
 			if ( ! $el.is( 'img' ) && ! $el.is( 'iframe' ) && ! $el.is( '.layout-box-insert' ) ) {
 				return;
 			}//end if
-
-				gigaom_layout_test.test = 'child blackouts';
 
 			var attr = gigaom_layout_test.attributes( $el );
 			attr.is_child = true;
@@ -634,7 +621,6 @@ var gigaom_layout_test = {
 
 		if ( 0 === this.inventory.blackouts.length ) {
 			$overlay = this.overlay( this.$content, start, this.$content.outerHeight(), 'rgba( 0, 255, 0, 0.5 )', 'solo-gap' );
-			gigaom_layout_test.test = 'overlay1';
 			gap = this.attributes( $overlay );
 			gap.$overlay = $overlay;
 			gap.$first_el = this.$content.find( ':first' );
@@ -653,7 +639,6 @@ var gigaom_layout_test = {
 					}//end if
 
 					$overlay = this.overlay( blackout.$overlay, start, gap_height, 'rgba( 0, 255, 0, 0.5 )', 'gap' );
-					gigaom_layout_test.test = 'overlay2';
 					gap = this.attributes( $overlay );
 					gap.$overlay = $overlay;
 
@@ -661,12 +646,10 @@ var gigaom_layout_test = {
 						gap.$first_el = this.$content.find( ':first' );
 					}//end if
 					else {
-						gigaom_layout_test.test = 'tmp1';
 						var tmp = this.attributes( previous_blackout.$overlay.next() );
 
 						// find an element below the blackout
 						while ( tmp.start < previous_blackout.end && tmp.$el.next().length ) {
-							gigaom_layout_test.test = 'find an element below the blackout';
 							tmp = this.attributes( tmp.$el.next() );
 						}// end while
 
@@ -695,7 +678,6 @@ var gigaom_layout_test = {
 			if ( previous_blackout.end < this.$content.outerHeight() ) {
 				// find the last gap below the final blackout
 				$overlay = this.overlay( previous_blackout.$overlay, start, ( this.$content.outerHeight() - start ), 'rgba( 0, 255, 0, 0.5 )', 'last-gap' );
-				gigaom_layout_test.test = 'last gap below the final blackout';
 				gap = this.attributes( $overlay );
 				gap.$overlay = $overlay;
 				gap.$first_el = gap.$overlay.next();
@@ -735,12 +717,10 @@ var gigaom_layout_test = {
 
 				if ( item.preferbottom ) {
 					// find the last element in the gap where item will fit
-					gigaom_layout_test.test = 'last element in the gap where item will fit';
 					var next_element = this.attributes( $element );
 					while ( next_element.end <= gap.end && ( gap.end - next_element.start ) > item.height ) {
 						//console.info( next_element.end + "<=" + gap.end + " && ( " + gap.end + " - " + next_element.start + " ) > " + item.height );
 						$element = next_element.$el;
-						gigaom_layout_test.test = 'last element in the gap loop';
 						next_element = this.attributes( $element.next() );
 					}// end while
 				}//end if
