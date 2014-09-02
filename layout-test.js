@@ -81,7 +81,8 @@ var gigaom_layout_test = {
 				color: 'blue',
 				location: 'left'
 			} ),
-			height: 270 // set to the required height, not the actual height
+			height: 270, // set to the required height, not the actual height
+			preferbottom: true
 		};
 		this.insert.newsletter = {
 			name: 'Newsletter Subscription',
@@ -154,10 +155,10 @@ var gigaom_layout_test = {
 				'ad_300x600',
 				'adc',
 				'auto3',
-				'autoe',
-				'newsletter',
 				'add',
+				'autoe',
 				'ade',
+				'newsletter',
 				'adf'
 			]
 		};
