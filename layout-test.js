@@ -580,7 +580,6 @@ var gigaom_layout_test = {
 					return;
 				}//end if
 			}//end for
-
 			var attr = gigaom_layout_test.attributes( $el );
 			attr.is_child = false;
 			gigaom_layout_test.inventory.blackouts.push( attr );
@@ -649,7 +648,7 @@ var gigaom_layout_test = {
 						var tmp = this.attributes( previous_blackout.$overlay.next() );
 
 						// find an element below the blackout
-						while ( tmp.start < previous_blackout.end ) {
+						while ( tmp.start < previous_blackout.end && tmp.$el.next().length ) {
 							tmp = this.attributes( tmp.$el.next() );
 						}// end while
 
@@ -659,7 +658,7 @@ var gigaom_layout_test = {
 						else {
 							// console.info( "failed to find an injection point - " + gap.height );
 							// console.log( tmp.start + " > " + previous_blackout.end + " && " + tmp.end + " < " + blackout.start );
-						}
+						}//end else
 					}//end else
 
 					if ( gap.$first_el ) {
@@ -695,8 +694,8 @@ var gigaom_layout_test = {
 				else {
 					// should we hide gaps with no injection point?
 					//gap.$overlay.remove();
-				}
-			}//end if
+				}//end else
+			} //end if
 
 			// execute common code on gaps
 			for ( i in this.inventory.gaps ) {
