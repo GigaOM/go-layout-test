@@ -38,7 +38,7 @@ var gigaom_layout_test = {};
 		this.insert = {};
 		this.insert.adb = {
 			name: 'Ad 300x250 B',
-			html_id: 'adB',
+			html_id: 'adb',
 			element_id: 'adb',
 			color: 'red',
 			location: 'right',
@@ -47,7 +47,7 @@ var gigaom_layout_test = {};
 
 		this.insert.ad_300x600 = {
 			name: 'Ad 300x600',
-			html_id: 'add-300x600',
+			html_id: 'ad-300x600',
 			element_id: 'ad_300x600',
 			color: 'red',
 			location: 'right',
@@ -55,13 +55,16 @@ var gigaom_layout_test = {};
 		};
 		this.insert.adc = {
 			name: 'Ad 300x250 C',
-			html_id: 'adC',
+			html_id: 'adc',
 			element_id: 'adc',
 			color: 'red',
 			location: 'right',
 			height: 250,
-			preferbottom: true
 		};
+		go_contentwidgets.layout_preferences.adc = {
+			direction: 'bottom'
+		}
+
 		this.insert.auto3 = {
 			name: 'Auto 3',
 			html_id: 'auto3',
@@ -77,8 +80,11 @@ var gigaom_layout_test = {};
 			color: 'blue',
 			location: 'left',
 			height: 270,
-			preferbottom: true
 		};
+		go_contentwidgets.layout_preferences.autoe = {
+			direction: 'bottom'
+		}
+
 		this.insert.newsletter = {
 			name: 'Newsletter Subscription',
 			html_id: 'newsletter-sub',
@@ -89,7 +95,7 @@ var gigaom_layout_test = {};
 		};
 		this.insert.add = {
 			name: 'Ad 300x250 D',
-			html_id: 'adD',
+			html_id: 'add',
 			element_id: 'add',
 			color: 'red',
 			location: 'right',
@@ -97,7 +103,7 @@ var gigaom_layout_test = {};
 		};
 		this.insert.ade = {
 			name: 'Ad 300x250 E',
-			html_id: 'adE',
+			html_id: 'adf',
 			element_id: 'ade',
 			color: 'red',
 			location: 'right',
@@ -105,7 +111,7 @@ var gigaom_layout_test = {};
 		};
 		this.insert.adf = {
 			name: 'Ad 300x250 F',
-			html_id: 'adF',
+			html_id: 'adf',
 			element_id: 'adf',
 			color: 'red',
 			location: 'right',
@@ -113,7 +119,7 @@ var gigaom_layout_test = {};
 		};
 		this.insert.adg = {
 			name: 'Ad 300x250 G',
-			html_id: 'adF',
+			html_id: 'adg',
 			element_id: 'adg',
 			color: 'red',
 			location: 'right',
@@ -378,7 +384,7 @@ var gigaom_layout_test = {};
 		this.$the_body.addClass( 'go-layout-test-bigger-font' );
 
 		this.init_widgets();
-		//go_contentwidgets.init();
+		go_contentwidgets.init();
 	};
 
 	/**
@@ -392,7 +398,7 @@ var gigaom_layout_test = {};
 		this.$the_body.addClass( 'go-layout-test-narrower' );
 
 		this.init_widgets();
-		//go_contentwidgets.init();
+		go_contentwidgets.init();
 	};
 
 	/**
@@ -406,7 +412,7 @@ var gigaom_layout_test = {};
 		this.$the_body.addClass( 'go-layout-test-narrowest' );
 
 		this.init_widgets();
-		//go_contentwidgets.init();
+		go_contentwidgets.init();
 	};
 })( jQuery );
 
@@ -430,7 +436,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 	go_contentwidgets.log = function( text ) {
 		go_contentwidgets.current = Date.now();
-		//console.info( text, go_contentwidgets.current - go_contentwidgets.last );
+		console.info( text, go_contentwidgets.current - go_contentwidgets.last );
 		go_contentwidgets.last = go_contentwidgets.current;
 	};
 
@@ -684,7 +690,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			var attr = go_contentwidgets.attributes( $el );
 			// since this is a child, after we've calculated the blackout grab its parent p
 			attr.$el = $el.closest( 'p' );
-			this.inventory.blackouts.push( attr );
+			go_contentwidgets.inventory.blackouts.push( attr );
 		});
 
 		go_contentwidgets.log( 'after find children / before blackout overlay generation' );
