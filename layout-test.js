@@ -322,6 +322,7 @@ var gigaom_layout_test = {};
 		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
 			var $el = $( this );
 			gigaom_layout_test[ $el.data( 'action' ) ]();
+			gigaom_layout_test.build_injected_json();
 		});
 
 		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
@@ -340,10 +341,10 @@ var gigaom_layout_test = {};
 	gigaom_layout_test.build_injected_json = function() {
 		var data = {
 			elements: [],
-			comments: $( '#comments .comment' ).length,
+			comments: parseInt( $( '#comment-count' ).data( 'comment-count' ), 10 ),
 			font_size: this.$the_body.hasClass( '.go-layout-test-bigger-font' ) ? '20px' : '18px'
 		};
-		$( '.layout-box-insert' ).each( function() {
+		this.$content.find( '.layout-box-insert' ).each( function() {
 			var $el = $( this );
 			data.elements.push( $el.data( 'element' ) );
 		});
