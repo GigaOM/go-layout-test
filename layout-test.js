@@ -11,32 +11,24 @@ var gigaom_layout_test = {};
 		this.current_strategy = 'ordered';
 		this.current_strategy_type = 'many_300x250';
 
+		this.init_widgets();
+		this.init_panel();
+
 		if ( auto_inject ) {
 			this.test_control();
 		}
-
-		this.init_panel();
 	};
 
 	gigaom_layout_test.clear_test = function() {
 		$( '.layout-box-thing, .layout-box-css, .layout-box-insert, #hidden-sidebar, #gigaom-layout-test-json-data' ).remove();
-		// remove any classes added by tests:
-		this.$the_body.removeClass( 'go-layout-test-bigger-font go-layout-test-narrower go-layout-test-narrowest' );
+
+		// allow tests to clean up after themselves
+		$( document ).trigger( 'gigaom-layout-test-clear' );
 	};
 
 	gigaom_layout_test.init_widgets = function() {
-		this.$hidden_sidebar = $( '<div id="hidden-sidebar"></div>' );
-		this.$the_body.prepend( this.$hidden_sidebar );
-
-		this.$hidden_sidebar.css( {
-			opacity: 0.075,
-			position: 'absolute',
-			right: 0,
-			top: 0,
-		} );
-
-		this.insert = {};
-		this.insert.adb = {
+		this.widgets = {};
+		this.widgets.adb = {
 			name: 'Ad 300x250 B',
 			html_id: 'adb',
 			element_id: 'adb',
@@ -45,15 +37,15 @@ var gigaom_layout_test = {};
 			height: 250
 		};
 
-		this.insert.ad_300x600 = {
+		this.widgets.ad_2 = {
 			name: 'Ad 300x600',
 			html_id: 'ad-300x600',
 			element_id: 'ad_300x600',
 			color: 'red',
 			location: 'right',
-			height: 550
+			height: 600
 		};
-		this.insert.adc = {
+		this.widgets.adc = {
 			name: 'Ad 300x250 C',
 			html_id: 'adc',
 			element_id: 'adc',
@@ -65,7 +57,7 @@ var gigaom_layout_test = {};
 			direction: 'bottom'
 		}
 
-		this.insert.auto3 = {
+		this.widgets.auto3 = {
 			name: 'Auto 3',
 			html_id: 'auto3',
 			element_id: 'auto3',
@@ -73,7 +65,7 @@ var gigaom_layout_test = {};
 			location: 'left',
 			height: 370
 		};
-		this.insert.autoe = {
+		this.widgets.autoe = {
 			name: 'Auto E',
 			html_id: 'autoe',
 			element_id: 'autoe',
@@ -85,7 +77,7 @@ var gigaom_layout_test = {};
 			direction: 'bottom'
 		}
 
-		this.insert.newsletter = {
+		this.widgets.newsletter = {
 			name: 'Newsletter Subscription',
 			html_id: 'newsletter-sub',
 			element_id: 'newsletter',
@@ -93,7 +85,7 @@ var gigaom_layout_test = {};
 			location: 'left',
 			height: 250
 		};
-		this.insert.add = {
+		this.widgets.add = {
 			name: 'Ad 300x250 D',
 			html_id: 'add',
 			element_id: 'add',
@@ -101,7 +93,7 @@ var gigaom_layout_test = {};
 			location: 'right',
 			height: 250
 		};
-		this.insert.ade = {
+		this.widgets.ade = {
 			name: 'Ad 300x250 E',
 			html_id: 'adf',
 			element_id: 'ade',
@@ -109,7 +101,7 @@ var gigaom_layout_test = {};
 			location: 'right',
 			height: 250
 		};
-		this.insert.adf = {
+		this.widgets.adf = {
 			name: 'Ad 300x250 F',
 			html_id: 'adf',
 			element_id: 'adf',
@@ -117,17 +109,21 @@ var gigaom_layout_test = {};
 			location: 'right',
 			height: 250
 		};
-		this.insert.adg = {
-			name: 'Ad 300x250 G',
-			html_id: 'adg',
-			element_id: 'adg',
-			color: 'red',
-			location: 'right',
-			height: 250
-		};
+	};
 
-		for ( var i in this.insert ) {
-			var widget = this.insert[ i ];
+	gigaom_layout_test.init_sidebar = function() {
+		this.$hidden_sidebar = $( '<div id="hidden-sidebar"></div>' );
+		this.$the_body.prepend( this.$hidden_sidebar );
+
+		this.$hidden_sidebar.css( {
+			opacity: 0.075,
+			position: 'absolute',
+			right: 0,
+			top: 0,
+		} );
+
+		for ( var i in this.widgets ) {
+			var widget = this.widgets[ i ];
 			this.$hidden_sidebar.append( '<div id="' + widget.html_id + '" data-element="' + widget.element_id + '" class="layout-box-insert layout-box-insert-' + widget.location + '" style="height:' + widget.height + 'px;background:' + widget.color + '"><div>' + widget.name + '</div></div>' );
 		}
 	};
@@ -220,6 +216,9 @@ var gigaom_layout_test = {};
 			'.inject-point {' +
 				'background: green;' +
 			'}' +
+			'.go-layout-test-no-go-inject .go-inject-content {' +
+				'display: none;' +
+			'}' +
 		'</style>';
 
 		this.$the_body.append( this.css );
@@ -297,18 +296,14 @@ var gigaom_layout_test = {};
 		$( 'body' ).append( $json_panel );
 
 		$panel.append( '<div class="info injection"><strong>Injection order:</strong></div>' );
-		$panel.append( '<div class="info order"><strong>Order on page:</strong></div>' );
 		$panel.append( '<div class="command-container"><ul class="commands" /></div>' );
 
 		var $injection = $panel.find( '.info.injection' );
-		var $order = $panel.find( '.info.order' );
 		var $commands = $panel.find( '.commands' );
 
 		$injection.append( '<ul class="inserted"/>' );
-		$order.append( '<ul class="order-on-page"/>' );
 
 		var $inserted = $injection.find( '.inserted' );
-		var $order_on_page = $order.find( '.order-on-page' );
 		var is_checked = true;
 
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="clear_test">Clear</button></li>' );
@@ -319,6 +314,9 @@ var gigaom_layout_test = {};
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change">Font size++</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_narrower">Narrower</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_narrowest">Narrowest</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_no_go_inject">No go-inject</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_block_ends">Block 1st/last p</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_no_tower">No tower</button></li>' );
 
 
 		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
@@ -328,20 +326,12 @@ var gigaom_layout_test = {};
 
 		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
 			$injection.hide();
-			$order.hide();
 			$inserted.html( '' );
 		});
 
-		$( document ).on( 'gigaom-layout-test-injected', function( e, data ) {
+		$( document ).on( 'go-contentwidgets-injected', function( e, data ) {
 			$injection.show();
-			$order.show();
 			$inserted.append( '<li class="item">' + data.injected.name + '</li>' );
-			$order_on_page.html( '' );
-
-			$( '.layout-box-insert' ).each( function() {
-				var $el = $( this );
-				$order_on_page.append( '<li class="item">' + $el.find( 'div' ).html() + '</li>' );
-			});
 		});
 
 		$( 'body' ).append( $panel );
@@ -362,14 +352,14 @@ var gigaom_layout_test = {};
 	};
 
 	/**
-	 * clears injected units
+	 * tests the baseline control
 	 */
 	gigaom_layout_test.test_control = function() {
 		this.clear_test();
 
 		this.init_style();
 
-		this.init_widgets();
+		this.init_sidebar();
 		go_contentwidgets.init();
 	};
 
@@ -383,7 +373,11 @@ var gigaom_layout_test = {};
 
 		this.$the_body.addClass( 'go-layout-test-bigger-font' );
 
-		this.init_widgets();
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font' );
+		} );
+
+		this.init_sidebar();
 		go_contentwidgets.init();
 	};
 
@@ -397,7 +391,11 @@ var gigaom_layout_test = {};
 
 		this.$the_body.addClass( 'go-layout-test-narrower' );
 
-		this.init_widgets();
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrower' );
+		} );
+
+		this.init_sidebar();
 		go_contentwidgets.init();
 	};
 
@@ -411,7 +409,77 @@ var gigaom_layout_test = {};
 
 		this.$the_body.addClass( 'go-layout-test-narrowest' );
 
-		this.init_widgets();
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrowest' );
+		} );
+
+		this.init_sidebar();
+		go_contentwidgets.init();
+	};
+
+	/**
+	 * clears go-inject widget before testing
+	 */
+	gigaom_layout_test.test_no_go_inject = function() {
+		this.clear_test();
+
+		this.init_style();
+
+		this.init_sidebar();
+
+		this.$the_body.addClass( 'go-layout-test-no-go-inject' );
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-no-go-inject' );
+		} );
+
+		go_contentwidgets.init();
+	};
+
+	/**
+	 * blocks the 1st and last paragraphs
+	 */
+	gigaom_layout_test.test_block_ends = function() {
+		this.clear_test();
+
+		this.init_style();
+
+		var blackout_selector = go_contentwidgets.blackout_selector;
+
+		go_contentwidgets.blackout_selector += ', > p:first-child, > p:last-child';
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			go_contentwidgets.blackout_selector = blackout_selector;
+		} );
+
+		this.init_sidebar();
+		go_contentwidgets.init();
+	};
+
+	/**
+	 * clears injected units
+	 */
+	gigaom_layout_test.test_no_tower = function() {
+		this.clear_test();
+
+		this.init_style();
+
+		var tower = $.extend( true, {}, this.widgets.ad_2 );
+
+		this.widgets.ad_2 = {
+			name: 'Ad G',
+			html_id: 'adg',
+			element_id: 'adg',
+			color: 'red',
+			location: 'right',
+			height: 250
+		};
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.widgets.ad_2 = tower;
+		} );
+
+		this.init_sidebar();
 		go_contentwidgets.init();
 	};
 })( jQuery );
@@ -433,6 +501,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 	'use strict';
 
 	go_contentwidgets.current = Date.now();
+	go_contentwidgets.blackout_selector = '> *:not(p,blockquote,h1,h2,h3,h4,h5,h6,ol,ul,script,address)';
 
 	go_contentwidgets.log = function( text ) {
 		go_contentwidgets.current = Date.now();
@@ -519,7 +588,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		var widget = {
 			name: widget_id,
 			$el: $widget,
-			height: parseInt( $widget.outerHeight( true ) * 0.9, 10 ),
+			height: parseInt( $widget.outerHeight( true ), 10 ) + 16, // reported height of the element and about 16px for some buffer
 			location: 'right',
 			preferbottom: false
 		};
@@ -677,7 +746,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		go_contentwidgets.log( 'before find :visible' );
 		// find top level blackouts
 		// since :visible isn't native CSS, following the jQuery recommendation of running it after a pure CSS selector
-		this.$content.find( '> *:not(p,blockquote,h1,h2,h3,h4,h5,h6,ol,ul,script,address)' ).filter( ':visible' ).each( function() {
+		this.$content.find( this.blackout_selector ).filter( ':visible' ).each( function() {
 			var $el = $( this );
 			var attr = go_contentwidgets.attributes( $el );
 			go_contentwidgets.inventory.blackouts.push( attr );
@@ -828,6 +897,10 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			// Failed to inject
 			return false;
 		}// end if
+
+		$( document ).trigger( 'go-contentwidgets-injected', {
+			injected: item
+		} );
 
 		$element.before( item.$el );
 		go_contentwidgets.log( 'end injecting item' );
