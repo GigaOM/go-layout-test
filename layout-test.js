@@ -169,6 +169,10 @@ var gigaom_layout_test = {};
 				'font-size: 1.25rem;' +
 				'line-height: 26px;' +
 			'}' +
+			'.go-layout-test.go-layout-test-bigger-font-22 .entry-content > div {' +
+				'font-size: 1.375rem;' +
+				'line-height: 26px;' +
+			'}' +
 			'.go-layout-test .entry-content p {' +
 				'margin-bottom: 24px;' +
 			'}' +
@@ -314,7 +318,9 @@ var gigaom_layout_test = {};
 
 		$commands.append( '<li class="command-label">Tests:</li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_control">Control</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change">Font size++</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_proposed">Proposed</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change">Font size 20px</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change_22">Font size 22px</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_narrower">Narrower</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_narrowest">Narrowest</button></li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_no_go_inject">No go-inject</button></li>' );
@@ -370,17 +376,19 @@ var gigaom_layout_test = {};
 	/**
 	 * tests the baseline control
 	 */
-	gigaom_layout_test.test_proposed_combination = function() {
+	gigaom_layout_test.test_proposed = function() {
 		this.clear_test();
 
 		this.init_style();
 
 		this.$the_body.addClass( 'go-layout-test-bigger-font' );
 		this.$the_body.addClass( 'go-layout-test-narrower' );
+		this.$the_body.addClass( 'go-layout-test-no-go-inject' );
 
 		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
 			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font' );
 			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrower' );
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-no-go-inject' );
 		} );
 
 		this.init_sidebar();
@@ -404,6 +412,25 @@ var gigaom_layout_test = {};
 		this.init_sidebar();
 		go_contentwidgets.init();
 	};
+
+	/**
+	 * changes the font size of the main body area
+	 */
+	gigaom_layout_test.test_font_size_change_22 = function() {
+		this.clear_test();
+
+		this.init_style();
+
+		this.$the_body.addClass( 'go-layout-test-bigger-font-22' );
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font-22' );
+		} );
+
+		this.init_sidebar();
+		go_contentwidgets.init();
+	};
+
 
 	/**
 	 * narrows the content
