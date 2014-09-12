@@ -129,20 +129,23 @@ var gigaom_layout_test = {};
 	};
 
 	gigaom_layout_test.init_style = function() {
-		this.$body.css( 'overflow', 'visible' );
-		this.$content.css( 'position', 'relative' );
-
-		this.$alignright = this.$content.find( '.alignright' );
-		this.$alignright.css( 'margin-right', '-172px' );
-
-		this.$alignleft = this.$content.find( '.alignleft' );
-		this.$alignleft.css( 'margin-left', '-112px' );
-		this.$alignleft.css( 'border-right', '1.25rem solid #fff' );
-		this.$alignleft.css( 'border-left', '1.25rem solid #fff' );
-
 		this.$the_body.addClass( 'go-layout-test' );
 
 		this.css = '<style class="layout-box-css">' +
+			'.go-layout-test .post section.body.entry-content {' +
+				'overflow: visible;' +
+			'}' +
+			'.go-layout-test .post section.body.entry-content > div {' +
+				'position: relative;' +
+			'}' +
+			'.go-layout-test .post section.body.entry-content > div .alignright {' +
+				'margin-right: -172px;' +
+			'}' +
+			'.go-layout-test .post section.body.entry-content > div .alignleft {' +
+				'margin-left: -112px;' +
+				'border-left: 1.25rem solid #fff;' +
+				'border-right: 1.25rem solid #fff;' +
+			'}' +
 			'.go-layout-test #body {' +
 				'float: none;' +
 				'left: -48px;' +
@@ -359,6 +362,26 @@ var gigaom_layout_test = {};
 		this.clear_test();
 
 		this.init_style();
+
+		this.init_sidebar();
+		go_contentwidgets.init();
+	};
+
+	/**
+	 * tests the baseline control
+	 */
+	gigaom_layout_test.test_proposed_combination = function() {
+		this.clear_test();
+
+		this.init_style();
+
+		this.$the_body.addClass( 'go-layout-test-bigger-font' );
+		this.$the_body.addClass( 'go-layout-test-narrower' );
+
+		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font' );
+			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrower' );
+		} );
 
 		this.init_sidebar();
 		go_contentwidgets.init();
