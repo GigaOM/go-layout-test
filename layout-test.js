@@ -866,7 +866,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 					// check that the element we found is below the blackout
 					// @note: slight fear that this could cause an infinite loop
-					while ( gap.$first_el.length && gap.$first_el.get( 0 ).offsetTop && gap.$first_el.get( 0 ).offsetTop < previous_blackout.end ) {
+					while ( gap.$first_el.length && 'undefined' != typeof gap.$first_el.get( 0 ).offsetTop && gap.$first_el.get( 0 ).offsetTop < previous_blackout.end ) {
 						gap.$first_el = gap.$first_el.next();
 					}// end while
 
