@@ -318,12 +318,7 @@ var gigaom_layout_test = {};
 
 		$commands.append( '<li class="command-label">Tests:</li>' );
 		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_control">Control</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_proposed">Proposed</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change">Font size 20px</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_font_size_change_22">Font size 22px</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_narrower">Narrower</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_block_ends">Block 1st/last p</button></li>' );
-		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_no_tower">No tower</button></li>' );
+		$commands.append( '<li class="command"><button type="button" class="action button link" data-action="test_alt_gap">Alt Gap</button></li>' );
 
 
 		$( document ).on( 'click', '.gigaom-layout-test-panel .action', function() {
@@ -375,123 +370,15 @@ var gigaom_layout_test = {};
 	/**
 	 * tests the baseline control
 	 */
-	gigaom_layout_test.test_proposed = function() {
+	gigaom_layout_test.test_alt_gap = function() {
 		this.clear_test();
 
 		this.init_style();
 
-		this.$the_body.addClass( 'go-layout-test-bigger-font' );
-		this.$the_body.addClass( 'go-layout-test-narrower' );
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font' );
-			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrower' );
-		} );
-
+		go_contentwidgets.single_use_gap_per_pass = true;
 		this.init_sidebar();
 		go_contentwidgets.init();
-	};
-
-	/**
-	 * changes the font size of the main body area
-	 */
-	gigaom_layout_test.test_font_size_change = function() {
-		this.clear_test();
-
-		this.init_style();
-
-		this.$the_body.addClass( 'go-layout-test-bigger-font' );
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font' );
-		} );
-
-		this.init_sidebar();
-		go_contentwidgets.init();
-	};
-
-	/**
-	 * changes the font size of the main body area
-	 */
-	gigaom_layout_test.test_font_size_change_22 = function() {
-		this.clear_test();
-
-		this.init_style();
-
-		this.$the_body.addClass( 'go-layout-test-bigger-font-22' );
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-bigger-font-22' );
-		} );
-
-		this.init_sidebar();
-		go_contentwidgets.init();
-	};
-
-
-	/**
-	 * narrows the content
-	 */
-	gigaom_layout_test.test_narrower = function() {
-		this.clear_test();
-
-		this.init_style();
-
-		this.$the_body.addClass( 'go-layout-test-narrower' );
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			gigaom_layout_test.$the_body.removeClass( 'go-layout-test-narrower' );
-		} );
-
-		this.init_sidebar();
-		go_contentwidgets.init();
-	};
-
-	/**
-	 * blocks the 1st and last paragraphs
-	 */
-	gigaom_layout_test.test_block_ends = function() {
-		this.clear_test();
-
-		this.init_style();
-
-		var blackout_selector = go_contentwidgets.blackout_selector;
-
-		go_contentwidgets.blackout_selector += ', > p:first-child, > p:last-child';
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			go_contentwidgets.blackout_selector = blackout_selector;
-		} );
-
-		this.init_sidebar();
-		go_contentwidgets.init();
-	};
-
-	/**
-	 * clears injected units
-	 */
-	gigaom_layout_test.test_no_tower = function() {
-		this.clear_test();
-
-		this.init_style();
-
-		var tower = $.extend( true, {}, this.widgets.ad_2 );
-
-		this.widgets.ad_2 = {
-			name: 'Ad G',
-			html_id: 'adg',
-			element_id: 'adg',
-			color: 'red',
-			location: 'right',
-			height: 250
-		};
-
-		$( document ).on( 'gigaom-layout-test-clear', function( e, data ) {
-			gigaom_layout_test.widgets.ad_2 = tower;
-		} );
-
-		this.init_sidebar();
-		go_contentwidgets.init();
+		go_contentwidgets.single_use_gap_per_pass = false;
 	};
 })( jQuery );
 
@@ -505,7 +392,7 @@ var gigaom_layout_test = {};
 if ( 'undefined' === typeof go_contentwidgets ) {
 	var go_contentwidgets = {
 		layout_preferences: {},
-		single_use_gap_per_pass: true
+		single_use_gap_per_pass: false
 	};
 }//end id
 
