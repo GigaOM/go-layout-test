@@ -504,7 +504,8 @@ var gigaom_layout_test = {};
 
 if ( 'undefined' === typeof go_contentwidgets ) {
 	var go_contentwidgets = {
-		layout_preferences: {}
+		layout_preferences: {},
+		single_use_gap_per_pass: true
 	};
 }//end id
 
@@ -880,10 +881,12 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 	};
 
 	go_contentwidgets.inject_item = function( item ) {
+		var i;
+		var length = 0;
 		var $element = null;
 		go_contentwidgets.log( 'injecting item' );
 
-		for ( var i = 0, length = this.inventory.gaps.length; i < length; i++ ) {
+		for ( i = 0, length = this.inventory.gaps.length; i < length; i++ ) {
 			var gap = this.attributes( this.inventory.gaps[ i ].$overlay );
 			gap.$overlay = this.inventory.gaps[ i ].$overlay;
 			gap.$first_el = this.inventory.gaps[ i ].$first_el;
@@ -914,6 +917,11 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		} );
 
 		$element.before( item.$el );
+
+		if ( this.single_use_gap_per_pass ) {
+			this.inventory.gaps.splice( i, 1 );
+		}//end if
+
 		go_contentwidgets.log( 'end injecting item' );
 	};
 
