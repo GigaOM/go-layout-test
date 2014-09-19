@@ -435,7 +435,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 			go_contentwidgets.auto_inject();
 		});
-	}
+	};
 
 	go_contentwidgets.init = function() {
 		this.loading = true;
@@ -471,6 +471,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		this.collect_widgets();
 
 		this.auto_inject();
+
 		this.$content.find( '.layout-box-thing' ).remove();
 		$( '#body' ).addClass( 'rendered' );
 		go_contentwidgets.current = Date.now();
@@ -695,7 +696,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		$injectable.before( $( '<div class="go-contentwidgets-spacer '+ alignment_class + '" style="height:' + distance +'px"/>' ) );
 	};
 
-	go_contentwidgets.identify_gaps = function() {
+	go_contentwidgets.identify_gaps = function( include_all ) {
 		var start = 0;
 		var gap;
 		var i;
@@ -719,6 +720,10 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 					// if the gap height isn't tall enough for our shortest widget, don't bother with it
 					if ( 0 === gap_height || gap_height < this.shortest_widget_height ) {
+						if ( previous_blackout.$el.hasClass( 'layout-box-insert' ) ) {
+							this.adjust_down( previous_blackout.$el, gap_height / 2 );
+						}//end if
+
 						start = blackout.end;
 						previous_blackout = blackout;
 						continue;
