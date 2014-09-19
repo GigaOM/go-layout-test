@@ -212,11 +212,13 @@ var gigaom_layout_test = {};
 			'}' +
 			'.layout-box-insert.layout-box-insert-right {' +
 				'float: right;' +
+				'clear: right;' +
 				'margin-left: 1.5rem;' +
 				'margin-right: -172px;' +
 			'}' +
 			'.layout-box-insert.layout-box-insert-left {' +
 				'float: left;' +
+				'clear: left;' +
 				'margin-left: -112px;' +
 				'margin-right: 1.5rem;' +
 			'}' +
@@ -225,6 +227,14 @@ var gigaom_layout_test = {};
 			'}' +
 			'.go-layout-test .go-inject-content {' +
 				'display: none;' +
+			'}' +
+			'.go-contentwidgets-spacer.layout-box-insert-left {' +
+				'float: left;' +
+				'clear: left;' +
+			'}' +
+			'.go-contentwidgets-spacer.layout-box-insert-right {' +
+				'float: right;' +
+				'clear: right;' +
 			'}' +
 		'</style>';
 
@@ -591,17 +601,17 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 	 */
 	go_contentwidgets.attributes = function( $el ) {
 		var margin_top = $el.css( 'margin-top' );
-
 		margin_top = parseInt( margin_top.replace( 'px', '' ), 10 );
 
-		var top = $el.get( 0 ).offsetTop;
+		var start = $el.get( 0 ).offsetTop;
+		start -= margin_top;
+
 		var height = parseInt( $el.outerHeight( true ), 10 );
-		top -= margin_top;
-		var end = top + height;
+		var end = start + height;
 
 		var data = {
 			$el: $el,
-			start: top,
+			start: start,
 			end: end,
 			height: height
 		};
@@ -624,7 +634,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 	};
 
 	go_contentwidgets.reset = function() {
-		this.$content.find( '.layout-box-thing' ).remove();
+		this.$content.find( '.layout-box-thing, .go-contentwidgets-spacer' ).remove();
 		this.inventory = {
 			blackouts: [],
 			gaps: []
@@ -642,6 +652,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 	};
 
 	go_contentwidgets.identify_blackouts = function() {
+
 		go_contentwidgets.log( 'before find :visible' );
 		// find top level blackouts
 		// since :visible isn't native CSS, following the jQuery recommendation of running it after a pure CSS selector
@@ -661,9 +672,9 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			go_contentwidgets.inventory.blackouts.push( attr );
 		});
 
-		go_contentwidgets.log( 'after find children / before blackout overlay generation' );
-
 		this.inventory.blackouts.sort( this.sort_by_start );
+
+		go_contentwidgets.log( 'after find children / before blackout overlay generation' );
 	};
 
 	/**
@@ -673,6 +684,15 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		var a_start = a.start;
 		var b_start = b.start;
 		return ( ( a_start < b_start ) ? -1 : ( ( a_start > b_start ) ? 1 : 0 ) );
+	};
+
+	go_contentwidgets.adjust_down = function( $injectable, distance ) {
+		var alignment_class = 'layout-box-insert-right';
+		if ( ! $injectable.hasClass( alignment_class ) ) {
+			alignment_class = 'layout-box-insert-left';
+		}//end if
+
+		$injectable.before( $( '<div class="go-contentwidgets-spacer '+ alignment_class + '" style="height:' + distance +'px"/>' ) );
 	};
 
 	go_contentwidgets.identify_gaps = function() {
@@ -707,6 +727,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 					gap = {};
 					gap.$overlay = this.overlay( blackout.$el, start, gap_height, 'gap' );
 					gap.$first_el = [];
+					gap.height = gap_height;
 
 					if ( 0 === start ) {
 						var tmp = this.attributes( this.$first_element );
@@ -751,6 +772,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 					gap = {};
 					gap.$overlay = this.overlay( previous_blackout.$el, start, ( this.$content.outerHeight() - start ), 'last-gap' );
 					gap.$first_el = gap.$overlay.next();
+					gap.height = gap_height;
 
 					// check that the element we found is below the blackout
 					// @note: slight fear that this could cause an infinite loop
@@ -767,25 +789,26 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		}//end else
 	};
 
-	go_contentwidgets.inject_item = function( item ) {
+	go_contentwidgets.inject_item = function( injectable ) {
 		var i;
 		var length = 0;
-		var $element = null;
-		go_contentwidgets.log( 'injecting item' );
+		var $injection_point = null;
+		var gap = null;
+		go_contentwidgets.log( 'injecting injectable' );
 
 		for ( i = 0, length = this.inventory.gaps.length; i < length; i++ ) {
-			var gap = this.attributes( this.inventory.gaps[ i ].$overlay );
+			gap = this.attributes( this.inventory.gaps[ i ].$overlay );
 			gap.$overlay = this.inventory.gaps[ i ].$overlay;
 			gap.$first_el = this.inventory.gaps[ i ].$first_el;
-			if ( gap.height > item.height ) {
-				$element = gap.$first_el;
+			if ( gap.height > injectable.height ) {
+				$injection_point = gap.$first_el;
 
-				if ( item.preferbottom ) {
-					// find the last element in the gap where item will fit
-					var next_element = this.attributes( $element );
-					while ( next_element.end <= gap.end && ( gap.end - next_element.start ) > item.height ) {
-						$element = next_element.$el;
-						next_element = this.attributes( $element.next() );
+				if ( injectable.preferbottom ) {
+					// find the last injection_point in the gap where injectable will fit
+					var next_injection_point = this.attributes( $injection_point );
+					while ( next_injection_point.end <= gap.end && ( gap.end - next_injection_point.start ) > injectable.height ) {
+						$injection_point = next_injection_point.$el;
+						next_injection_point = this.attributes( $injection_point.next() );
 					}// end while
 				}//end if
 				else {
@@ -794,22 +817,18 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			}//end if
 		}//end for
 
-		if ( ! $element ) {
+		if ( ! $injection_point ) {
 			// Failed to inject
 			return false;
 		}// end if
 
+		$injection_point.before( injectable.$el );
+
 		$( document ).trigger( 'go-contentwidgets-injected', {
-			injected: item
+			injected: injectable
 		} );
 
-		$element.before( item.$el );
-
-		if ( this.single_use_gap_per_pass ) {
-			this.inventory.gaps.splice( i, 1 );
-		}//end if
-
-		go_contentwidgets.log( 'end injecting item' );
+		go_contentwidgets.log( 'end injecting injectable' );
 	};
 
 	$( function() {
