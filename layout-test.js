@@ -84,7 +84,7 @@ var gigaom_layout_test = {};
 
 		this.widgets.newsletter = {
 			name: 'Newsletter Subscription',
-			html_id: 'newsletter-sub',
+			html_id: 'newsletter',
 			element_id: 'newsletter',
 			color: 'blue',
 			location: 'left',
