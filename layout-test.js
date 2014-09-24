@@ -55,7 +55,7 @@ var gigaom_layout_test = {};
 		};
 		go_contentwidgets.layout_preferences.adc = {
 			direction: 'bottom'
-		}
+		};
 
 		this.widgets.auto3 = {
 			name: 'Auto 3',
@@ -65,6 +65,10 @@ var gigaom_layout_test = {};
 			location: 'left',
 			height: 370
 		};
+		go_contentwidgets.layout_preferences.auto3 = {
+			location: 'left'
+		};
+
 		this.widgets.autoe = {
 			name: 'Auto E',
 			html_id: 'autoe',
@@ -74,8 +78,9 @@ var gigaom_layout_test = {};
 			height: 270,
 		};
 		go_contentwidgets.layout_preferences.autoe = {
-			direction: 'bottom'
-		}
+			direction: 'bottom',
+			location: 'left'
+		};
 
 		this.widgets.newsletter = {
 			name: 'Newsletter Subscription',
@@ -85,6 +90,10 @@ var gigaom_layout_test = {};
 			location: 'left',
 			height: 250
 		};
+		go_contentwidgets.layout_preferences.newsletter = {
+			location: 'left'
+		};
+
 		/*
 		this.widgets.add = {
 			name: 'Ad 300x250 D',
@@ -126,7 +135,7 @@ var gigaom_layout_test = {};
 
 		for ( var i in this.widgets ) {
 			var widget = this.widgets[ i ];
-			this.$hidden_sidebar.append( '<div id="' + widget.html_id + '" data-element="' + widget.element_id + '" class="layout-box-insert layout-box-insert-' + widget.location + '" style="height:' + widget.height + 'px;background:' + widget.color + '"><div>' + widget.name + '</div></div>' );
+			this.$hidden_sidebar.append( '<div id="' + widget.html_id + '" data-element="' + widget.element_id + '" class="layout-box-insert" style="height:' + widget.height + 'px;background:' + widget.color + '"><div>' + widget.name + '</div></div>' );
 		}
 	};
 
@@ -691,6 +700,9 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 	go_contentwidgets.adjust_down = function( $injectable, distance ) {
 		var alignment_class = 'layout-box-insert-right';
+
+		distance = Math.round( distance / 8 ) * 8;
+
 		if ( ! $injectable.hasClass( alignment_class ) ) {
 			alignment_class = 'layout-box-insert-left';
 		}//end if
