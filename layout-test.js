@@ -157,6 +157,12 @@ var gigaom_layout_test = {};
 				'border-left: 1.25rem solid #fff;' +
 				'border-right: 1.25rem solid #fff;' +
 			'}' +
+			'.go-layout-test .post section.body.entry-content > div .aligncenter .alignright,' +
+			'.go-layout-test .post section.body.entry-content > div .aligncenter .alignleft {' +
+				'border: 0;' +
+				'margin-left: 0;' +
+				'margin-right: 0;' +
+			'}' +
 			'.go-layout-test #body {' +
 				'float: none;' +
 				'left: -48px;' +
