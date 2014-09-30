@@ -415,7 +415,6 @@ var gigaom_layout_test = {};
 // with the one exception that automatic function calls are commented out (init and events)
 // ================================================================================================
 // ================================================================================================
-
 if ( 'undefined' === typeof go_contentwidgets ) {
 	var go_contentwidgets = {
 		layout_preferences: {},
@@ -426,6 +425,7 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 (function( $ ) {
 	'use strict';
 
+	go_contentwidgets.full_inject_complete = false;
 	go_contentwidgets.current = Date.now();
 	go_contentwidgets.blackout_selector = '> *:not(p,blockquote,h1,h2,h3,h4,h5,h6,ol,ul,script,address)';
 
@@ -445,12 +445,22 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		} );
 
 		// watch for resizes and re-inject all the things
-		$( document ).on( 'go-resize', function() {
-			go_contentwidgets.$widgets.each( function() {
-				$( '#hidden-sidebar' ).append( $( this ) );
-			});
+		$( document ).on( 'go-resize', function( e, states ) {
+			if ( 'full' === states.to ) {
+				go_contentwidgets.unbookmark_ads();
 
-			go_contentwidgets.auto_inject();
+				if ( false === go_contentwidgets.full_inject_complete ) {
+					go_contentwidgets.auto_inject();
+				}//end if
+			} else {
+				var $ad_b_bookmark = $( '#ad-b-bookmark' );
+
+				if ( $ad_b_bookmark.length ) {
+					return;
+				}//end if
+
+				go_contentwidgets.inject_small();
+			}//end else
 		});
 	};
 
@@ -485,9 +495,38 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			}//end else
 		});
 
+		$( '.alignleft' ).each( function() {
+			var $el = $( this );
+			var width = $el.outerWidth( false );
+
+			if ( $el.closest( '.aligncenter' ).length ) {
+				return;
+			}//end if
+
+			$el.wrap( '<div class="go-contentwidgets-align-container go-contentwidgets-alignleft"/>' );
+			$el.css( 'height', 'auto' );
+		});
+
+		$( '.alignright' ).each( function() {
+			var $el = $( this );
+			var width = $el.outerWidth( false );
+
+			if ( $el.closest( '.aligncenter' ).length ) {
+				return;
+			}//end if
+
+			$el.wrap( '<div class="go-contentwidgets-align-container go-contentwidgets-alignright"/>' );
+			$el.css( 'height', 'auto' );
+		});
+
 		this.collect_widgets();
 
-		this.auto_inject();
+		// we do the standard auto_inject for 960px and greater
+		if ( $( 'body' ).outerWidth() >= 960 ) {
+			this.auto_inject();
+		} else {
+			this.inject_small();
+		}//end else
 
 		this.$content.find( '.layout-box-thing' ).remove();
 		$( '#body' ).addClass( 'rendered' );
@@ -496,6 +535,45 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 		$( document ).trigger( 'go-contentwidgets-complete' );
 		this.loading = false;
+	};
+
+	/**
+	 * inject ads b and c into the content of a post
+	 */
+	go_contentwidgets.inject_small = function() {
+		var $stuff = $( '.entry-content > .container > *:not(.layout-box-insert,.go-contentwidgets-spacer,.bookmarked-widget)' );
+		var $ad_b = $( '#ad-b' ).closest( '.widget-go-ads' );
+		var $ad_c = $( '#ad-c' ).closest( '.widget-go-ads' );
+
+		var $ad_b_bookmark = $( '<span id="ad-b-bookmark"/>' );
+		var $ad_c_bookmark = $( '<span id="ad-c-bookmark"/>' );
+
+		$ad_b.before( $ad_b_bookmark );
+		$ad_c.before( $ad_c_bookmark );
+
+		if ( $stuff.length >= 3 ) {
+			$stuff.eq( 1 ).after( $ad_b );
+		} else {
+			$stuff.eq( 0 ).after( $ad_c );
+		}//end else
+
+		$( '.entry-content > .tags' ).after( $ad_c );
+	};
+
+	/**
+	 * place ads b and c back where they belong
+	 */
+	go_contentwidgets.unbookmark_ads = function() {
+		var $ad_b_bookmark = $( '#ad-b-bookmark' );
+		var $ad_c_bookmark = $( '#ad-c-bookmark' );
+
+		if ( $ad_b_bookmark.length ) {
+			$ad_b_bookmark.replaceWith( $( '#ad-b' ).closest( '.widget-go-ads' ) );
+		}
+
+		if ( $ad_c_bookmark.length ) {
+			$ad_c_bookmark.replaceWith( $( '#ad-c' ).closest( '.widget-go-ads' ) );
+		}
 	};
 
 	go_contentwidgets.collect_widgets = function() {
@@ -609,6 +687,8 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 			go_contentwidgets.calc();
 			go_contentwidgets.inject_item( go_contentwidgets.insert[ i ] );
 		}// end foreach
+
+		this.full_inject_complete = true;
 	};
 
 	/**
@@ -741,7 +821,11 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 					// if the gap height isn't tall enough for our shortest widget, don't bother with it
 					if ( 0 === gap_height || gap_height < this.shortest_widget_height ) {
 						if ( previous_blackout.$el.hasClass( 'layout-box-insert' ) ) {
-							this.adjust_down( previous_blackout.$el, gap_height / 2 );
+							// only gap adjust right aligned elements or left aligned elements if the next element is not a left gap blocker
+							if ( previous_blackout.$el.hasClass( 'layout-box-insert-right' )
+							     || ! this.left_blocker_in_gap( previous_blackout.$el.next(), blackout.start ) ) {
+								this.adjust_down( previous_blackout.$el, gap_height / 2 );
+							}//end if
 						}//end if
 
 						start = blackout.end;
@@ -854,20 +938,16 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 		// determine if the left injection overlaps an element that should push it to the right
 		// this is not super efficient, but we will be doing this rarely, so it's probably ok?
+
 		if ( injectable.$el.hasClass( 'layout-box-insert-left' ) ) {
 			var injectable_attrs = this.attributes( injectable.$el );
 
-			var next_injection_point = this.attributes( $injection_point );
-			var tag;
-			while ( next_injection_point.end <= injection_gap.end && injectable_attrs.end > next_injection_point.start ) {
-				tag = next_injection_point.$el.prop( 'tagName' );
-				if ( tag === 'UL' || tag === 'LI' || tag === 'BLOCKQUOTE' ) {
-					console.info('FOUND ONE!!!!!!!!');
-					injectable.$el.removeClass( 'layout-box-insert-left' ).addClass( 'layout-box-insert-right' );
-				}//end if
+			var end = injection_gap.end < injectable_attrs.end ? injection_gap.end : injectable_attrs.end;
 
-				next_injection_point = this.attributes( next_injection_point.$el.next() );
-			}// end while
+			if ( this.left_blocker_in_gap( $injection_point, end ) ) {
+				console.info( 'shifting right!' );
+				injectable.$el.removeClass( 'layout-box-insert-left' ).addClass( 'layout-box-insert-right' );
+			}//end if
 		}//end if
 
 		$( document ).trigger( 'go-contentwidgets-injected', {
@@ -877,9 +957,23 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 		go_contentwidgets.log( 'end injecting injectable' );
 	};
 
+	go_contentwidgets.left_blocker_in_gap = function( $el, end ) {
+		var injection_point = this.attributes( $el );
+		while ( injection_point.end <= end && injection_point.start < end ) {
+			var tag = injection_point.$el.prop( 'tagName' );
+			console.info( tag );
+			if ( tag === 'UL' || tag === 'LI' || tag === 'BLOCKQUOTE' ) {
+				return false;
+			}//end if
+
+			injection_point = this.attributes( injection_point.$el.next() );
+		}// end while
+
+		return false;
+	};
+
 	$( function() {
 		//go_contentwidgets.init();
 		//go_contentwidgets.events();
 	});
 })( jQuery );
-
