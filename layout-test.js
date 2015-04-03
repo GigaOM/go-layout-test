@@ -68,7 +68,7 @@ var gigaom_layout_test = {};
 		go_contentwidgets.layout_preferences.auto3 = {
 			location: 'left'
 		};
-
+/*
 		this.widgets.autoe = {
 			name: 'Auto E',
 			html_id: 'autoe',
@@ -81,7 +81,7 @@ var gigaom_layout_test = {};
 			direction: 'bottom',
 			location: 'left'
 		};
-
+*/
 		this.widgets.newsletter = {
 			name: 'Newsletter Subscription',
 			html_id: 'newsletter',
@@ -91,6 +91,7 @@ var gigaom_layout_test = {};
 			height: 250
 		};
 		go_contentwidgets.layout_preferences.newsletter = {
+			direction: 'bottom',
 			location: 'left'
 		};
 
@@ -484,16 +485,6 @@ if ( 'undefined' === typeof go_contentwidgets ) {
 
 		this.$first_element = this.$content.find( ':first' );
 		this.$images = this.$content.find( 'img' );
-
-		this.$images.each( function() {
-			var $img = $( this );
-
-			if ( $img.attr( 'width' ) < $img.closest( '.entry-content' ).width() ) {
-				$img.css( 'height', $img.attr( 'height' ).concat( 'px' ) );
-			} else {
-				$img.css( 'height', 'auto' );
-			}//end else
-		});
 
 		$( '.alignleft' ).each( function() {
 			var $el = $( this );

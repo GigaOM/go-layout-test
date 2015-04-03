@@ -1,5 +1,20 @@
 <?php
 
+$args = getopt( '', array(
+	'width:',
+) );
+
+if ( empty( $args['width'] ) )
+{
+	die( 'You must specify a browser width with --width [value]' );
+}//end if
+
+$zoom = 1.0;
+
+if ( $args['width'] < 641 ) {
+	$zoom = 2.0;
+}//end if
+
 $db = new mysqli( '127.0.0.1', 'root', '', 'pro' );
 if ( $db->connect_errno > 0 )
 {
@@ -14,8 +29,12 @@ if ( ! $result = $db->query( $sql ) )
 
 while ( $row = $result->fetch_assoc() )
 {
+	/*
 	`webkit2png --ignore-ssl-check -F -W 1000 \
 --js='webkit2png.stop();( function() {function callback() {gigaom_layout_test.init(true);jQuery("#comments-list,#hidden-sidebar,#sidebar,.gigaom-layout-test-panel,gigaom-layout-test-panel-json,#add,#ade,#adf").remove();webkit2png.start();}var s = document.createElement( "script" );s.src = "https://localhost/layout-test.js";if ( s.addEventListener ) {s.addEventListener( "load", callback, false );} else if( s.readyState ) {s.onreadystatechange = callback;}document.body.appendChild( s );} )();' {$row['url']}`;
+	*/
+
+	`webkit2png --ignore-ssl-check -F --width {$args['width']} -z {$zoom} {$row['url']}?gigaom-theme-preview`;
 
 	$sql = "UPDATE wp_go_layout_screenshot SET
 		`timestamp` = NOW()
